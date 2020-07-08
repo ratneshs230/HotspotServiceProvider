@@ -4,9 +4,26 @@ public class TransactionModel {
 
 
 
-        private String transactionID,transactionAmount,transactionTime,transactionStatus;
+       String transactionID,transactionAmount,transactionTime,transactionStatus;
+        String transactionDate,transactionDetail;
 
-        public String getTransactionID() {
+    public String getTransactionDate() {
+        return transactionDate;
+    }
+
+    public void setTransactionDate(String transactionDate) {
+        this.transactionDate = transactionDate;
+    }
+
+    public String getTransactionDetail() {
+        return transactionDetail;
+    }
+
+    public void setTransactionDetail(String transactionDetail) {
+        this.transactionDetail = transactionDetail;
+    }
+
+    public String getTransactionID() {
             return transactionID;
         }
 

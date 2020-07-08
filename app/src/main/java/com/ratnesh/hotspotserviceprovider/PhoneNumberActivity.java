@@ -7,10 +7,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 public class PhoneNumberActivity extends AppCompatActivity  implements View.OnClickListener{
     EditText phn;
         Button next_login;
+        TextView forgotPass;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,6 +22,14 @@ public class PhoneNumberActivity extends AppCompatActivity  implements View.OnCl
         phn = findViewById(R.id.phn);
         next_login = findViewById(R.id.login_next);
 
+        forgotPass=findViewById(R.id.forgotPassword);
+
+        forgotPass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
 
 
         next_login.setOnClickListener(this);

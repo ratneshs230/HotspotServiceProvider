@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">HotspotServiceProvider</string>
     <string name="Rs">\u20B9</string>
-
+    <string name="msg_token_fmt">notificationToken</string>
+    <string name="notificationChannel">HotspotNotification</string>
 
 </resources>

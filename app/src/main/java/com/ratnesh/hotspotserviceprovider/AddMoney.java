@@ -33,6 +33,7 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,6 +55,7 @@ public class AddMoney extends AppCompatActivity {
     String userBalance;
     String rs;
     TransactionModel transactionModel;
+    String timeFormat[],time;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -344,50 +346,75 @@ public class AddMoney extends AppCompatActivity {
 
             if (requestCode == PWEStaticDataModel.PWE_REQUEST_CODE) {
                 try {
+
+                    transactionModel.setTransactionAmount(amt);
+                    transactionModel.setTransactionID(uid);
+                    transactionModel.setTransactionStatus("Success");
+
+                    timeFormat= Calendar.getInstance().getTime().toString().split("GMT");
+                    time=timeFormat[0].trim();
+
+                    Log.w(TAG,"Time=>"+time);
+                    transactionModel.setTransactionTime(time);
+
                     String result = data.getStringExtra("result");
                     String payment_response = data.getStringExtra("payment_response");
                     if (result.contains(PWEStaticDataModel.TXN_SUCCESS_CODE)) {
                         Toast.makeText(AddMoney.this, "Payment Successful", Toast.LENGTH_SHORT).show();
 
-                        transactionModel.setTransactionAmount();
+
+                        transactionModel.setTransactionStatus("Success");
+
+                        Log.w(TAG,"Time=>"+time);
+                        transactionModel.setTransactionTime(time);
+
                         //PWWtaticDataModel.TXN_SUCCESS_CODE is a string constant and its value is “payment_successfull”
                         //Code here will execute if the payment transaction completed successfully.
                         // here merchant can show the payment success message.
                     } else if (result.contains(PWEStaticDataModel.TXN_TIMEOUT_CODE)) {
                         Toast.makeText(AddMoney.this, "Transaction Timed out", Toast.LENGTH_SHORT).show();
+                        transactionModel.setTransactionStatus("Failed");
 
                         //PWEStaticDataModel.TXN_TIMEOUT_CODE is a string constant and its value is “txn_session_timeout”
                         //Code here will execute if the payment transaction failed because of the transaction time out.
                         // here merchant can show the payment failed message.
                     } else if (result.contains(PWEStaticDataModel.TXN_BACKPRESSED_CODE)) {
                         Toast.makeText(AddMoney.this, "Back Button Pressed", Toast.LENGTH_SHORT).show();
+                        transactionModel.setTransactionStatus("Failed");
 
                         //PWEStaticDataModel.TXN_BACKPRESSED_CODE is a string constant and its value is “back_pressed”
                         //Code here will execute if the user pressed the back button on coupons Activity.
                         // here merchant can show the payment failed message.
                     } else if (result.contains(PWEStaticDataModel.TXN_USERCANCELLED_CODE)) {
                         Toast.makeText(AddMoney.this, "Transaction Cancelled By User", Toast.LENGTH_SHORT).show();
+                        transactionModel.setTransactionStatus("Failed");
 
                         //PWEStaticDataModel.TXN_USERCANCELLED_CODE is a string constant and its value is “user_cancelled”
                         //Code here will execute if the the user pressed the cancel button during the payment process.
                         // here merchant can show the payment failed message.
                     } else if (result.contains(PWEStaticDataModel.TXN_ERROR_SERVER_ERROR_CODE)) {
                         Toast.makeText(AddMoney.this, "Server Error", Toast.LENGTH_SHORT).show();
+                        transactionModel.setTransactionStatus("Failed");
 
 
                     } else if (result.contains(PWEStaticDataModel.TXN_ERROR_TXN_NOT_ALLOWED_CODE)) {
                         Toast.makeText(AddMoney.this, "Transaction Not Allowed", Toast.LENGTH_SHORT).show();
+                        transactionModel.setTransactionStatus("Failed");
 
                     } else if (result.contains(PWEStaticDataModel.TXN_BANK_BACK_PRESSED_CODE)) {
                         Toast.makeText(AddMoney.this, "BANK_BACK_PRESSED", Toast.LENGTH_SHORT).show();
+                        transactionModel.setTransactionStatus("Failed");
 
                     } else {
                         Toast.makeText(AddMoney.this, "Payment Failed", Toast.LENGTH_SHORT).show();
+                        transactionModel.setTransactionStatus("Failed");
 
                         // Here the value of result is “payment_failed” or “error_noretry” or “retry_fail_error”
                         //Code here will execute if payment is failed some other reasons.
                         // here merchant can show the payment failed message.
                     }
+                    transactionsref.setValue(transactionModel);
+
                 } catch (Exception e) {
                     //Handle exceptions here
                 }
