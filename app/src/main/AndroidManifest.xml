@@ -13,22 +13,52 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".AddMoney" />
-        <activity android:name=".SendToBank" />
-        <activity android:name=".RequestStatement" />
-        <activity android:name=".WalletOptions" />
-        <activity android:name=".Wallet" />
-        <activity android:name=".UpdateGSTDetails" />
-        <activity android:name=".UpdateBankDetails" />
-        <activity android:name=".UploadPan" />
-        <activity android:name=".UploadAAdhar" />
-        <activity android:name=".DocumentsUpdate" />
-        <activity android:name=".PartnerProfile" />
-        <activity android:name=".UserDetailsEdit" />
-        <activity android:name=".AllServices" />
+        <activity android:name=".Settings"></activity>
+        <activity
+            android:name=".AddMoney"
+            android:label="Add Money" />
+        <activity
+            android:name=".SendToBank"
+            android:label="Send To Bank Account" />
+        <activity
+            android:name=".RequestStatement"
+            android:label="RequestStatement" />
+        <activity
+            android:name=".WalletOptions"
+            android:label="Wallet Options" />
+        <activity
+            android:name=".Wallet"
+            android:label="Passbook"
+            android:parentActivityName=".AllServices" />
+        <activity
+            android:name=".UpdateGSTDetails"
+            android:label="Update GST Details" />
+        <activity
+            android:name=".UpdateBankDetails"
+            android:label="Update Bank Details" />
+        <activity
+            android:name=".UploadPan"
+            android:label="Update Pan Details" />
+        <activity
+            android:name=".UploadAAdhar"
+            android:label="Update Aadhar" />
+        <activity
+            android:name=".DocumentsUpdate"
+            android:label="Documents Update" />
+        <activity
+            android:name=".PartnerProfile"
+            android:label="Profile" />
+        <activity
+            android:name=".UserDetailsEdit"
+            android:label="Edit Details" />
+        <activity
+            android:name=".AllServices"
+            android:label="Home" />
         <activity android:name=".OtpActivity" />
         <activity android:name=".PhoneNumberActivity" />
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".MainActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -1,11 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".PhoneNumberActivity">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/login_next"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/layoutMobileNo"
+            android:layout_gravity="center"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginRight="25dp"
+            android:background="#F05921"
+            android:paddingLeft="40dp"
+            android:paddingRight="40dp"
+            android:text="Sumbit"
+            android:textColor="#F5851E"
+            android:textSize="20sp" />
+
+
+        <ImageView
+            android:id="@+id/imagelogo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="60dp"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:src="@drawable/reg" />
+
+        <TextView
+            android:id="@+id/textViewNumberCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/layoutMobileNo"
+            android:layout_alignParentEnd="true"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/textViewCountryCode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/imagelogo"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="22dp"
+            android:paddingTop="5dp"
+            android:layout_marginBottom="2dp"
+            android:layout_marginEnd="4dp"
+            android:gravity="center|bottom"
+            android:paddingLeft="15dp"
+
+            android:text="+91"
+            android:textColor="#000000"
+            android:textSize="22sp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layoutMobileNo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/imagelogo"
+            android:layout_toEndOf="@+id/textViewCountryCode"
+            android:hint="Mobile Number"
+            android:text="+91"
+            android:textColorHint="#C8C3C3"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/phn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:paddingTop="15dp"
+                android:inputType="number"
+                android:maxLength="10"
+                android:layout_marginRight="20dp"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textColor="#000000"
+                android:textSize="22sp"
+                app:backgroundTint="@color/colorPrimary" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+    </RelativeLayout>
+    <!--
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -48,5 +135,5 @@
                 android:elevation="8dp"
                 android:text="Generate OTP" />
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>-->
+</RelativeLayout>

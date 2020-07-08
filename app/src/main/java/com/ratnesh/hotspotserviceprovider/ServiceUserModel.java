@@ -2,7 +2,7 @@ package com.ratnesh.hotspotserviceprovider;
 
 public class ServiceUserModel {
 
-   private String userName;
+   private String Name;
     private String mail;
     private String phn;
     private  String add1;
@@ -65,12 +65,12 @@ public class ServiceUserModel {
         Profileimage = profileimage;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getName() {
+        return Name;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setName(String name) {
+        Name = name;
     }
 
     public String getMail() {

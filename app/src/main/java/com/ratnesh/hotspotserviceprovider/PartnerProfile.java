@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,6 +29,7 @@ public class PartnerProfile extends AppCompatActivity implements View.OnClickLis
     DatabaseReference ref;
     ServiceUserModel model;
     String TAG="Profile";
+    TextView Signout;
 ProgressBar progress;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +43,7 @@ ProgressBar progress;
             uid=pref.getString("uid","");
         }
 
+        Signout=findViewById(R.id.signOut);
         progress=findViewById(R.id.progress);
         profileImg=findViewById(R.id.ProfilePicture);
         editProfile=findViewById(R.id.editProfile);
@@ -52,6 +55,7 @@ ProgressBar progress;
         editProfile.setOnClickListener(this);
         documentUpload.setOnClickListener(this);
         aboutme.setOnClickListener(this);
+        Signout.setOnClickListener(this);
 
         model=new ServiceUserModel();
 
@@ -67,7 +71,7 @@ ProgressBar progress;
 
 
                     Picasso.get().load(model.getProfileimage()).into(profileImg);
-                    username.setText(model.getUserName());
+                    username.setText(model.getName());
                 }
             }
 
@@ -98,6 +102,14 @@ ProgressBar progress;
             case R.id.about:{
 
                 break;
+            }
+            case R.id.signOut:{
+                FirebaseAuth.getInstance().signOut();
+                SharedPreferences pref=getSharedPreferences("PartnerPref",MODE_PRIVATE);
+                SharedPreferences.Editor edit=pref.edit();
+                edit.clear();
+                Intent intent=new Intent(PartnerProfile.this,PhoneNumberActivity.class);
+                startActivity(intent);
             }
         }
 

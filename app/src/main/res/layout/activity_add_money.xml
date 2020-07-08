@@ -99,59 +99,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/upilayout" />
 
-        <LinearLayout
-            android:id="@+id/cardLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cardPayment">
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:text="Card Number"
-                android:textSize="15dp"
-                android:id="@+id/cardNumber"
-                android:textStyle="italic" />
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:text="Valid Upto"
-                android:textSize="15dp"
-                android:paddingHorizontal="20dp"
-                android:id="@+id/validDate"
-                android:textStyle="italic" />
-            <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="CVV"
-            android:textSize="15dp"
-                android:paddingHorizontal="20dp"
-
-                android:id="@+id/cvvInput"
-            android:textStyle="italic" />
-            <Button
-                android:id="@+id/cash_paymentBtn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="20dp"
-
-                android:gravity="center"
-                android:padding="10dp"
-                android:text="Proceed"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
-
-        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

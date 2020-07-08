@@ -7,11 +7,16 @@ import android.content.SharedPreferences;
 import android.net.wifi.hotspot2.pps.HomeSp;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
     Intent intent;
     int SPLASH_SCREEN_TIME_OUT=1000;
-
+    FirebaseUser user;
+    String TAG="MainActivity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,7 +25,11 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences authPref=getSharedPreferences("PartnerPref",MODE_PRIVATE);
         boolean loginState=authPref.getBoolean("Login_State",false);
         String uid=authPref.getString("uid","");
-        if(loginState && uid!=null){
+
+        user= FirebaseAuth.getInstance().getCurrentUser();
+        Log.w(TAG,"FirebaseUser=>"+user);
+
+        if(loginState && user!=null){
             intent=new Intent(MainActivity.this, AllServices.class);
             intent.putExtra("uid",uid);
         }

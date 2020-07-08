@@ -436,13 +436,13 @@ public class UserDetailsEdit extends AppCompatActivity implements  View.OnClickL
             });
             String Name = name.getText().toString();
             Log.w(TAG, "NAMe==>" + Name);
-            model.setUserName(Name);
+            model.setName(Name);
             model.setMail(mail.getText().toString());
             model.setPhn(phn.getText().toString());
             model.setAdd2(add2.getText().toString());
             model.setAdd3(add3.getText().toString());
             model.setAdd1(add1.getText().toString());
-
+            model.setWalletBalance("0");
             model.setReferralCode(refferalCode.getText().toString().trim());
             model.setPushkey(pushkey);
             model.setUid(uid);
