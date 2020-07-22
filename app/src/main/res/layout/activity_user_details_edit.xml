@@ -30,6 +30,7 @@
             android:layout_height="150dp"
             android:layout_gravity="center"
             android:layout_margin="10dp"
+            android:src="@drawable/man"
             android:textStyle="italic"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -50,9 +51,11 @@
               android:id="@+id/category"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:orientation="horizontal"
+              android:layout_margin="20dp"
+              android:orientation="vertical"
               android:padding="5dp"
               app:layout_constraintEnd_toEndOf="parent"
+              app:layout_constraintStart_toEndOf="@+id/profile_image"
               app:layout_constraintTop_toTopOf="parent">
 
               <TextView
@@ -70,11 +73,13 @@
                   android:layout_height="match_parent"
                   android:spinnerMode="dropdown" />
           </LinearLayout>
-          <LinearLayout
+       <!--   <LinearLayout
               android:id="@+id/linearLayout3"
               android:layout_width="wrap_content"
-              android:layout_height="40dp"
-              android:orientation="horizontal"
+              android:layout_height="wrap_content"
+              android:orientation="vertical"
+              android:padding="10dp"
+              android:layout_margin="10dp"
               app:layout_constraintBottom_toTopOf="@+id/linearLayout"
               app:layout_constraintEnd_toEndOf="parent"
               app:layout_constraintTop_toTopOf="parent">
@@ -96,7 +101,7 @@
                   android:layout_weight="1"
                   android:spinnerMode="dropdown" />
           </LinearLayout>
-
+-->
         <LinearLayout
             android:id="@+id/linearLayout"
             android:layout_width="300dp"
@@ -147,7 +152,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:hint="House No."
+                android:hint="Address 1"
                 android:padding="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -176,19 +181,13 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/address2" />
 
-<TextView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:id="@+id/referralLayout"
 
-    android:text="Apply Referral Code"/>
             <EditText
                 android:id="@+id/referralCode"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:padding="8dp"
-                android:visibility="gone"
                 android:hint="Enter Referral Code"
                 />
             <Button

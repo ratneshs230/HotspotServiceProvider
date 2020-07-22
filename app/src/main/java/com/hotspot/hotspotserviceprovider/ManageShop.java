@@ -1,0 +1,356 @@
+package com.hotspot.hotspotserviceprovider;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import android.Manifest;
+import android.app.AlertDialog;
+import android.content.ContentValues;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class ManageShop extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
+
+    private static final int CAMERA_REQUEST_CODE = 100;
+    private static final int STORAGE_REQUEST_CODE = 200;
+    private static final int OPTION_CAMERA_CODE = 1000;
+    private static final int OPTION_GALLERY_CODE = 1001;
+    private String[] cameraPermission;
+    private String[] storagePermission;
+
+    ShopDetailModel model;
+    Uri imageUri;
+    ArrayAdapter<String> cityAdapter;
+    Spinner citySpinner;
+    String TAG="ManageShop";
+    String cityName, stateName;
+    ImageView imageView;
+    ImageButton addImage;
+    TextInputEditText shopName,shopCategory,shopOwnerName,ownerContact,ownerEmail,shopAddress,address2;
+    Spinner state,city;
+    Button submit;
+    DatabaseReference reference;
+    String phone;
+    int cityChoice, stateChoice = 0;
+    private String[] stateSpinner = new String[]{
+            "Select State", "Delhi NCR", "Uttar Pradesh", "Rajasthan"};
+    private String[] delhiSpinner = new String[]{
+            "Select City", "Delhi", "Greater Noida", "Gurgaon"};
+    private String[] upSpinner = new String[]{
+            "Select City", "Agra", "Noida", "Lucknow"};
+    private String[] rajasthanSpinner = new String[]{
+            "Select City", "Jaipur"};
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_manage_shop);
+try {
+    cameraPermission = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    storagePermission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+
+    SharedPreferences pref = getSharedPreferences("PartnerPref", MODE_PRIVATE);
+    SharedPreferences.Editor editor = pref.edit();
+
+    phone=pref.getString("Phone","");
+    if(phone.equals("")){
+        phone="UnKnown";
+    }
+    model=new ShopDetailModel();
+
+    imageView = findViewById(R.id.imageView);
+    addImage = findViewById(R.id.addImage);
+    shopAddress = findViewById(R.id.address1);
+    shopName = findViewById(R.id.shopName);
+    shopCategory = findViewById(R.id.shopCategory);
+    shopOwnerName = findViewById(R.id.shopOwnerName);
+    ownerContact = findViewById(R.id.ownerContact);
+    ownerEmail = findViewById(R.id.ownerEmail);
+    address2 = findViewById(R.id.address2);
+    state = findViewById(R.id.state);
+    city = findViewById(R.id.city);
+    submit = findViewById(R.id.submit);
+
+    addImage.setOnClickListener(this);
+    submit.setOnClickListener(this);
+    ArrayAdapter<String> adapter = new ArrayAdapter(this,
+            android.R.layout.simple_spinner_item, stateSpinner);
+    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+    state.setAdapter(adapter);
+    state.setOnItemSelectedListener(this);
+
+}catch (Exception e){
+    e.printStackTrace();
+}
+    }
+
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+
+        Log.w(TAG, "ResultCode=>" + resultCode);
+        Log.w(TAG, "RequestCode=>" + requestCode);
+        try {
+            if (resultCode == RESULT_OK) {
+                if (requestCode == OPTION_GALLERY_CODE) {
+                    CropImage.activity(data.getData())
+                            .setGuidelines(CropImageView.Guidelines.ON)
+                            .start(this);
+                    Log.w(TAG, "GalleryImage");
+
+                }
+                if (requestCode == OPTION_CAMERA_CODE) {
+                    CropImage.activity(imageUri)
+                            .setGuidelines(CropImageView.Guidelines.ON)
+                            .start(this);
+                    Log.w(TAG, "CameraImage");
+                }
+            }
+            if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+                CropImage.ActivityResult result = CropImage.getActivityResult(data);
+                if (resultCode == RESULT_OK) {
+                    imageUri = result.getUri();
+                    imageView.setImageURI(imageUri);
+                    Picasso.get().load(imageUri).into(imageView);
+                    Log.w(TAG, "ResultUri=>" + imageUri);
+
+
+                } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                    Exception e = result.getError();
+                    Toast.makeText(ManageShop.this, e + "", Toast.LENGTH_LONG).show();
+
+                }
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+switch (view.getId()){
+    case R.id.submit:{
+        saveOnDb();
+        break;
+    }
+    case R.id.addImage:{
+        showImagedImportDialog();
+        break;
+    }
+
+}
+    }
+
+    private void showImagedImportDialog() {
+        String[] items = {"Camera", "Gallery"};
+
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+
+        dialog.setTitle("Select App");
+        dialog.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if (i == 0) {
+                    if (!checkCameraPermission()) {
+                        requestCameraPermission();
+                    } else
+                        openCamera();
+                }
+                if (i == 1) {
+                    if (i == 0) {
+                        if (!checkStoragePermission()) {
+                            requestStoragePermission();
+                        }
+                    } else
+                        openGallery();
+                }
+            }
+        });
+        dialog.create().show();
+    }
+
+
+    //permissionCheck
+    private boolean checkStoragePermission() {
+        boolean resultStorage = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) == (PackageManager.PERMISSION_GRANTED);
+        return resultStorage;
+    }
+    private void saveOnDb() {
+    try {
+        reference = FirebaseDatabase.getInstance().getReference().child("Partner").child(phone).child("ShopDetails");
+        final StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("Partner").child("PartnerShop");
+        final String[] path = new String[1];
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                storageReference.child(phone).putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Task<Uri> downloadUri = taskSnapshot.getStorage().getDownloadUrl();
+                        downloadUri.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                path[0] = uri.toString();
+                                Map<String, Object> imageObject = new HashMap<>();
+                                imageObject.put("ShopImage", path[0]);
+                                reference.updateChildren(imageObject).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        Toast.makeText(ManageShop.this, "Data Saved SUccessfully ", Toast.LENGTH_LONG).show();
+                                    }
+                                });
+
+                            }
+                        });
+                    }
+                });
+            }
+        });
+        model.setOwnerContact(ownerContact.getText().toString().trim());
+        model.setOwnerMail(ownerEmail.getText().toString().trim());
+        model.setOwnerName(shopOwnerName.getText().toString().trim());
+        model.setShopAddress(shopAddress.getText().toString().trim() + address2.getText().toString().trim());
+        model.setShopCategory(shopCategory.getText().toString().trim());
+
+        model.setCity(cityName);
+        model.setState(stateName);
+        reference.setValue(model).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                Log.w(TAG, "Data SAved");
+            }
+        });
+    }catch (Exception e){
+        e.printStackTrace();
+    }
+
+    }
+
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        if (adapterView.getId() == R.id.state) {
+
+            if (i == 1) {
+                stateChoice = 1;
+                cityAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, delhiSpinner);
+                cityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                stateName = "Delhi NCR";
+
+                //delhi
+            } else if (i == 2) {
+                stateChoice = 2;
+                cityAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, upSpinner);
+                cityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                stateName = "Uttar Pradesh";
+
+
+
+                //up
+            } else if (i == 3) {
+                stateChoice = 3;
+                cityAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, rajasthanSpinner);
+                cityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                stateName = "Rajasthan";
+
+
+
+                //Rajasthan
+            }
+            city.setAdapter(cityAdapter);
+            city.setOnItemSelectedListener(this);
+
+            Log.w(TAG, "StateSelected" + stateChoice + "STateName=>" + stateName);
+        } else if (adapterView.getId() == R.id.city) {
+            cityName = adapterView.getItemAtPosition(i).toString();
+
+            Log.w(TAG, "cityName=>" + cityName);
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
+    }
+
+
+    //permissionRequest
+    private void requestStoragePermission() {
+        ActivityCompat.requestPermissions(this, storagePermission, STORAGE_REQUEST_CODE);
+    }
+
+    private void requestCameraPermission() {
+        ActivityCompat.requestPermissions(this, cameraPermission, CAMERA_REQUEST_CODE);
+    }
+
+
+    //GalleryOpen
+    private void openGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/");
+        startActivityForResult(intent, OPTION_GALLERY_CODE);
+    }
+
+    private boolean checkCameraPermission() {
+
+        boolean resultCamera = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.CAMERA) == (PackageManager.PERMISSION_GRANTED);
+
+        boolean resultStorage = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) == (PackageManager.PERMISSION_GRANTED);
+
+        return resultCamera && resultStorage;
+    }
+    //CameraOpen
+    private void openCamera() {
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.TITLE, "NewPic");
+        values.put(MediaStore.Images.Media.DESCRIPTION, "Result Image");
+        imageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+        startActivityForResult(cameraIntent, OPTION_CAMERA_CODE);
+    }
+
+}
