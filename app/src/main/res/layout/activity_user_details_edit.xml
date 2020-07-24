@@ -45,63 +45,63 @@
             android:src="@drawable/ic_baseline_add_a_photo_24"
             android:textStyle="italic"
             app:layout_constraintBottom_toBottomOf="@+id/profile_image"
-            app:layout_constraintEnd_toEndOf="@+id/profile_image" />
+            app:layout_constraintStart_toEndOf="@+id/profile_image" />
 
-          <LinearLayout
-              android:id="@+id/category"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_margin="20dp"
-              android:orientation="vertical"
-              android:padding="5dp"
-              app:layout_constraintEnd_toEndOf="parent"
-              app:layout_constraintStart_toEndOf="@+id/profile_image"
-              app:layout_constraintTop_toTopOf="parent">
+          <!--   <LinearLayout
+                 android:id="@+id/category"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:layout_margin="20dp"
+                 android:orientation="vertical"
+                 android:padding="5dp"
+                 app:layout_constraintEnd_toEndOf="parent"
+                 app:layout_constraintStart_toEndOf="@+id/profile_image"
+                 app:layout_constraintTop_toTopOf="parent">
 
-              <TextView
-                  android:id="@+id/categoryDrop"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:layout_gravity="center"
-                  android:text="Select Category"
-                  android:textColor="#000000"
-                  android:textSize="15dp" />
+                 <TextView
+                     android:id="@+id/categoryDrop"
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:layout_gravity="center"
+                     android:text="Select Category"
+                     android:textColor="#000000"
+                     android:textSize="15dp" />
 
-              <Spinner
-                  android:id="@+id/categorySpinner"
-                  android:layout_width="match_parent"
-                  android:layout_height="match_parent"
-                  android:spinnerMode="dropdown" />
-          </LinearLayout>
-       <!--   <LinearLayout
-              android:id="@+id/linearLayout3"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:orientation="vertical"
-              android:padding="10dp"
-              android:layout_margin="10dp"
-              app:layout_constraintBottom_toTopOf="@+id/linearLayout"
-              app:layout_constraintEnd_toEndOf="parent"
-              app:layout_constraintTop_toTopOf="parent">
+                 <Spinner
+                     android:id="@+id/categorySpinner"
+                     android:layout_width="match_parent"
+                     android:layout_height="match_parent"
+                     android:spinnerMode="dropdown" />
+             </LinearLayout>
+             <LinearLayout
+                 android:id="@+id/linearLayout3"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:orientation="vertical"
+                 android:padding="10dp"
+                 android:layout_margin="10dp"
+                 app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+                 app:layout_constraintEnd_toEndOf="parent"
+                 app:layout_constraintTop_toTopOf="parent">
 
-              <TextView
-                  android:id="@+id/type_drop"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:layout_gravity="center"
-                  android:layout_weight="1"
-                  android:text="Select Type"
-                  android:textColor="#000000"
-                  android:textSize="15dp" />
+                 <TextView
+                     android:id="@+id/type_drop"
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:layout_gravity="center"
+                     android:layout_weight="1"
+                     android:text="Select Type"
+                     android:textColor="#000000"
+                     android:textSize="15dp" />
 
-              <Spinner
-                  android:id="@+id/spinner1"
-                  android:layout_width="match_parent"
-                  android:layout_height="match_parent"
-                  android:layout_weight="1"
-                  android:spinnerMode="dropdown" />
-          </LinearLayout>
--->
+                 <Spinner
+                     android:id="@+id/spinner1"
+                     android:layout_width="match_parent"
+                     android:layout_height="match_parent"
+                     android:layout_weight="1"
+                     android:spinnerMode="dropdown" />
+             </LinearLayout>
+   -->
         <LinearLayout
             android:id="@+id/linearLayout"
             android:layout_width="300dp"
@@ -140,7 +140,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-
+                android:inputType="number"
                 android:hint="Phone Number"
                 android:padding="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -169,18 +169,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/address1" />
 
-            <EditText
-                android:id="@+id/address3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-
-                android:padding="8dp"
-                android:text="Lucknow, Uttar Pradesh"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/address2" />
-
 
             <EditText
                 android:id="@+id/referralCode"
@@ -190,6 +178,19 @@
                 android:padding="8dp"
                 android:hint="Enter Referral Code"
                 />
+            <Spinner
+                android:id="@+id/state"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:paddingVertical="20dp" />
+
+            <Spinner
+                android:id="@+id/city"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:paddingVertical="20dp" />
             <Button
                 android:id="@+id/saveBtn"
                 android:layout_width="match_parent"

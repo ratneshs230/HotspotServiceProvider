@@ -21,7 +21,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Welcome To Hotspot Drive"
+                android:text="Welcome To Hotspot Partner"
                 android:textSize="18dp"
                 android:textStyle="bold"
                 android:layout_margin="5dp"
@@ -62,7 +62,7 @@
                         <ImageView
                             android:layout_width="40dp"
                             android:layout_height="40dp"
-                            android:src="@drawable/ic_baseline_shopping_basket_24"
+                            android:src="@drawable/ic_baseline_store_24"
                             android:layout_gravity="center"
                             />
                         <TextView
@@ -119,7 +119,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:id="@+id/Wallet"
+                        android:id="@+id/manageProducts"
                         android:layout_margin="5dp"
 
                         >
@@ -128,11 +128,11 @@
                             android:layout_height="40dp"
 
                             android:layout_gravity="center"
-                            android:src="@drawable/ic_baseline_account_balance_wallet_24"/>
+                            android:src="@drawable/ic_baseline_shopping_basket_24"/>
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Hotspot \nWallet"
+                            android:text="Manage \nProducts"
                             android:gravity="center"
                             android:layout_gravity="center"
                             />
@@ -204,7 +204,8 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Emergency Contact"
+                            android:text="Contact \nUs"
+                            android:layout_gravity="center"
                             android:gravity="center"
                             />
                     </LinearLayout>

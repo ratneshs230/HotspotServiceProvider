@@ -28,34 +28,36 @@ public class WalletOptions extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wallet_options);
+        try {
+            SharedPreferences userPref = getSharedPreferences("PartnerPref", MODE_PRIVATE);
+            uid = userPref.getString("uid", "");
 
-        SharedPreferences userPref=getSharedPreferences("PartnerPref",MODE_PRIVATE);
-        uid=userPref.getString("uid","");
+            balance = findViewById(R.id.balance);
+            statement = findViewById(R.id.statementRequest);
+            send = findViewById(R.id.sentToBank);
+            add = findViewById(R.id.addMoney);
+            ref = FirebaseDatabase.getInstance().getReference().child("Partner").child(uid);
+            model = new ServiceUserModel();
 
-        balance=findViewById(R.id.balance);
-        statement=findViewById(R.id.statementRequest);
-        send=findViewById(R.id.sentToBank);
-        add=findViewById(R.id.addMoney);
-        ref= FirebaseDatabase.getInstance().getReference().child("Partner").child(uid);
-        model=new ServiceUserModel();
+            ref.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    Log.w(TAG, "DataSnapshot=>" + dataSnapshot);
+                    model = dataSnapshot.getValue(ServiceUserModel.class);
+                    balance.setText(model.getWalletBalance());
+                }
 
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Log.w(TAG,"DataSnapshot=>"+dataSnapshot);
-                model=dataSnapshot.getValue(ServiceUserModel.class);
-                balance.setText(model.getWalletBalance());
-            }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-        statement.setOnClickListener(this);
-        add.setOnClickListener(this);
-        send.setOnClickListener(this);
-
+                }
+            });
+            statement.setOnClickListener(this);
+            add.setOnClickListener(this);
+            send.setOnClickListener(this);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override

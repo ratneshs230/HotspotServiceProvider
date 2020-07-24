@@ -13,6 +13,7 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -59,7 +60,7 @@ public class UserDetailsEdit extends AppCompatActivity implements  View.OnClickL
 
     String cameraPermission[];
     String storagePermission[];
-    EditText name,phn, add1,add2,add3,mail,refferalCode;
+    EditText name,phn, add1,add2,mail,refferalCode;
     Button save;
     String uid,phoneNumber,type;
     String key,TAG="UserDetails";
@@ -73,119 +74,60 @@ public class UserDetailsEdit extends AppCompatActivity implements  View.OnClickL
     Uri imageUri;
     StorageReference ImageRef;
     ProgressBar progress;
-    private String[] Partner_type = new String[]{"Shop Owner","Service Provider","Door Step Service"};
-   /* private String[] Shop_Services=new String[]{ "Medics"
-            ,"Driver Service",
-
-            "Electric Chimney",
-            "Fire Fighting Contractors",
-            "Flooring Contractors",
-            "Civil Contractors",
-            "Gardening Tools Services",
-            "House Keeping Cleaning",
-            "Interior Designers Architecture",
-            "Home Theatre",
-           "Architects",
-            "Packaging Labelling",
-            "Swimming Contractors",
-            "Painting Contractors",
-            "Roofing Contractors",
-            "Security Equipment Services",
-            "DTH",
-            "Wall Paper Contractors",
-            "Water Proofing Contractors",
-            "Architects",
-
-            "Carpet Contractors",
-            "Civil Contractors",
-            "Driver Service",
-            "Duplicate Key Makers",
-            "Electric Chimney",
-            "Electricians",
-            "Fire Fighting Contractors",
-            "Flooring Contractors",
-            "Gardening Tools Services",
-            "Home Theatre",
-            "House Keeping Cleaning",
-            "Interior Decorators",
-            "Interior Designers Architecture",
-            "Internet Service Providers",
-            "Lock Repair Services",
-            "Packaging Labelling",
-            "Painters",
-            "Pest Control",
-            "Roofing Contractors",
-            "Security Equipment Services",
-            "Swimming Contractors",
-            "Towing Services",
-            "Wall Paper Contractors",
-            "Water Proofing Contractors",
-            "Window Tinting Services",
-            "On Call Doctors",
-            "On Call Gynaecologists",
-            "On Call Paediatricians",
-            "On Call Veterinary Doctors",
-            "Online Doctors"};
-    String[] DoorStepService=new String[]{"Carpenters","Carpet Cleaners","Duplicate Key Makers","Electricians","Masons", "Painters",
-            "Pest Control",
-            "Plumbers",
-            "Towing Services",
-            "Carpet Contractors", "Interior Decorators",
-            "Internet Service Providers",
-            "Lock Repair Services","Painting Contractors", "On Call Doctors",
-            "On Call Gynaecologists",
-            "On Call Paediatricians",
-            "On Call Veterinary Doctors",
-            "Online Doctors",            "Swimming Contractors",
+    int cityChoice, stateChoice = 0;
+    ArrayAdapter<String> cityAdapter;
+    String cityName, stateName;
+    SharedPreferences pref;
+    private String[] stateSpinner = new String[]{
+            "Select State", "Delhi NCR", "Uttar Pradesh", "Rajasthan"};
+    private String[] delhiSpinner = new String[]{
+            "Select City", "Delhi", "Greater Noida", "Gurgaon"};
+    private String[] upSpinner = new String[]{
+            "Select City", "Agra", "Noida", "Lucknow"};
+    private String[] rajasthanSpinner = new String[]{
+            "Select City", "Jaipur"};
+    Spinner state,city;
 
 
-    };*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_details_edit);
 try {
     Intent i = getIntent();
-    uid = i.getStringExtra("uid");
-    phoneNumber = i.getStringExtra("no");
-    mAuth = FirebaseAuth.getInstance();
+    pref=getSharedPreferences("PartnerPref",MODE_PRIVATE);
+
+       mAuth = FirebaseAuth.getInstance();
+
+
+        uid=pref.getString("uid","");
+
+        phoneNumber=pref.getString("Phone","");
 
     Log.w(TAG, "UID RECIEVED-=>" + uid);
 
     name = findViewById(R.id.UserFullName);
     add1 = findViewById(R.id.address1);
     add2 = findViewById(R.id.address2);
-    add3 = findViewById(R.id.address3);
     mail = findViewById(R.id.mail);
     phn = findViewById(R.id.phn);
     save = findViewById(R.id.saveBtn);
     profileImg = findViewById(R.id.profile_image);
     addImg = findViewById(R.id.addImage);
     refferalCode = findViewById(R.id.referralCode);
+    state = findViewById(R.id.state);
+    city = findViewById(R.id.city);
 
-    partnerSpinner=findViewById(R.id.categorySpinner);
-
-    referralLayout.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            if (refferalCode.getVisibility() == View.GONE) {
-                refferalCode.setVisibility(View.VISIBLE);
-
-            } else
-                refferalCode.setVisibility(View.GONE);
-
-        }
-    });
     phn.setText(phoneNumber);
 
     model = new ServiceUserModel();
 
     ArrayAdapter<String> adapter = new ArrayAdapter(this,
-            android.R.layout.simple_spinner_item, Partner_type);
+            android.R.layout.simple_spinner_item, stateSpinner);
     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-    partnerSpinner.setAdapter(adapter);
-    partnerSpinner.setOnItemSelectedListener(this);
+    state.setAdapter(adapter);
+    state.setOnItemSelectedListener(this);
 
     cameraPermission = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     storagePermission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -201,7 +143,12 @@ try {
     public void onClick(View view) {
 
         switch(view.getId()){
+            case R.id.addImage:{
+                Log.w(TAG,"AddimagePressed");
+                showImageImportDialog();
 
+                break;
+            }
             case R.id.saveBtn:{
 
                 if (TextUtils.isEmpty(name.getText().toString().trim())) {
@@ -214,17 +161,17 @@ try {
                 } else if (TextUtils.isEmpty(add2.getText().toString().trim())) {
                     add2.setError("Area/Block is Required");
                     add2.requestFocus();
-                } else if (TextUtils.isEmpty(add3.getText().toString().trim())) {
-
-                    Toast.makeText(UserDetailsEdit.this, "Please fill in the City", Toast.LENGTH_SHORT).show();
-
                 }else if(TextUtils.isEmpty(phn.getText().toString().trim())) {
                     phn.setError("Phone Number is required");
                 }
-                else if(type.isEmpty()){
-                        drop_type.setTextColor(Color.RED);
-                    Toast.makeText(UserDetailsEdit.this, "Select Type of service", Toast.LENGTH_SHORT).show();
-
+                else if(TextUtils.isEmpty(mail.getText().toString().trim())){
+                    mail.setError("Mail is mandatory");
+                    mail.requestFocus();
+                }
+                else if(stateName.equals("Select State")){
+                    Toast.makeText(UserDetailsEdit.this,"Please Select State",Toast.LENGTH_SHORT).show();
+                }else if(cityName.equals("Select City")){
+                    Toast.makeText(UserDetailsEdit.this,"Please Select City",Toast.LENGTH_SHORT).show();
                 }
                     else{
 
@@ -233,12 +180,7 @@ try {
                     }
                 break;
                 }
-            case R.id.addImage:{
 
-                showImageImportDialog();
-
-                break;
-            }
         }
 
     }
@@ -345,9 +287,10 @@ try {
         try {
             super.onActivityResult(requestCode, resultCode, data);
 
+
             Log.w(TAG, "ResultCode=>" + resultCode);
             Log.w(TAG, "RequestCode=>" + requestCode);
-            try {
+
                 if (resultCode == RESULT_OK) {
                     if (requestCode == OPTION_GALLERY_CODE) {
                         CropImage.activity(data.getData())
@@ -370,10 +313,7 @@ try {
                         profileImg.setImageURI(imageUri);
                         Picasso.get().load(imageUri).into(profileImg);
                         Log.w(TAG, "ResultUri=>" + imageUri);
-                        model.setProfileimage(imageUri.toString());
 
-                        BitmapDrawable bitmapDrawable = (BitmapDrawable) profileImg.getDrawable();
-                        Bitmap bitmap = bitmapDrawable.getBitmap();
 
                     } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                         Exception e = result.getError();
@@ -385,22 +325,20 @@ try {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+
     }
 
 
 
     private void storeDataOnDb() {
         try {
-            reff = FirebaseDatabase.getInstance().getReference().child("Partner").child(uid);
+            reff = FirebaseDatabase.getInstance().getReference().child("Partner").child(phoneNumber);
             String pushkey = reff.push().getKey();
 
             ImageRef = FirebaseStorage.getInstance().getReference().child(uid)
                     .child("UserDp").child(uid);
             final String[] path = new String[1];
-
+if(imageUri!=null){
             ImageRef.putFile(imageUri).addOnSuccessListener(this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -436,14 +374,16 @@ try {
                     });
                 }
             });
+}
             String Name = name.getText().toString();
             Log.w(TAG, "NAMe==>" + Name);
             model.setName(Name);
             model.setMail(mail.getText().toString());
             model.setPhn(phn.getText().toString());
             model.setAdd2(add2.getText().toString());
-            model.setAdd3(add3.getText().toString());
             model.setAdd1(add1.getText().toString());
+            model.setState(stateName);
+            model.setCity(cityName);
             model.setWalletBalance("0");
             model.setReferralCode(refferalCode.getText().toString().trim());
             model.setPushkey(pushkey);
@@ -455,7 +395,6 @@ try {
                 public void onSuccess(Void Void) {
                     Intent intent = new Intent(UserDetailsEdit.this, AllServices.class);
                     startActivity(intent);
-                    Toast.makeText(UserDetailsEdit.this, "Upload Succesfull", Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -466,12 +405,43 @@ try {
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        if (adapterView.getId() == R.id.state) {
 
-                    type=adapterView.getItemAtPosition(i).toString();
+            if (i == 1) {
+                stateChoice = 1;
+                cityAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, delhiSpinner);
+                cityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                stateName = "Delhi NCR";
+
+                //delhi
+            } else if (i == 2) {
+                stateChoice = 2;
+                cityAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, upSpinner);
+                cityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                stateName = "Uttar Pradesh";
 
 
 
-        Log.w(TAG,"Type=>"+type);
+                //up
+            } else if (i == 3) {
+                stateChoice = 3;
+                cityAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, rajasthanSpinner);
+                cityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                stateName = "Rajasthan";
+
+
+
+                //Rajasthan
+            }
+            city.setAdapter(cityAdapter);
+            city.setOnItemSelectedListener(this);
+
+            Log.w(TAG, "StateSelected" + stateChoice + "STateName=>" + stateName);
+        } else if (adapterView.getId() == R.id.city) {
+            cityName = adapterView.getItemAtPosition(i).toString();
+
+            Log.w(TAG, "cityName=>" + cityName);
+        }
         }
 
 

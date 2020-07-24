@@ -24,14 +24,7 @@ try {
     phn = findViewById(R.id.phn);
     next_login = findViewById(R.id.login_next);
 
-    forgotPass = findViewById(R.id.forgotPassword);
 
-    forgotPass.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-
-        }
-    });
 
 
     next_login.setOnClickListener(this);

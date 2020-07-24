@@ -169,6 +169,34 @@ try {
     public void onClick(View view) {
 switch (view.getId()){
     case R.id.submit:{
+        if(imageUri==null){
+            Toast.makeText(ManageShop.this,"Please select an Image of your shop",Toast.LENGTH_SHORT).show();
+
+        }else if(shopName.getText().toString().trim().equals("")){
+            shopName.setError("Shop name is mandatory");
+            shopName.requestFocus();
+        }else if (shopCategory.getText().toString().equals("")){
+            shopCategory.setError("Enter Shop Category ");
+            shopCategory.requestFocus();
+        }else if(shopOwnerName.getText().toString().equals("")){
+            shopOwnerName.requestFocus();
+            shopOwnerName.setError("Enter Owner Name");
+        }else if(ownerContact.getText().toString().equals("")){
+            ownerContact.requestFocus();
+            ownerContact.setError("Enter Owner Name");
+        }else if(ownerEmail.getText().toString().equals("")){
+            ownerEmail.requestFocus();
+            ownerEmail.setError("Enter Owner Name");
+        }else if(shopAddress.getText().toString().equals("")){
+            shopAddress.requestFocus();
+            shopAddress.setError("Enter Owner Name");
+        }  else if(stateName.equals("Select State")){
+            Toast.makeText(ManageShop.this,"Please Select State",Toast.LENGTH_SHORT).show();
+        }else if(cityName.equals("Select City")){
+            Toast.makeText(ManageShop.this,"Please Select City",Toast.LENGTH_SHORT).show();
+        }
+
+
         saveOnDb();
         break;
     }
@@ -223,6 +251,7 @@ switch (view.getId()){
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
+                if(imageUri!=null){
                 storageReference.child(phone).putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -236,7 +265,7 @@ switch (view.getId()){
                                 reference.updateChildren(imageObject).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
-                                        Toast.makeText(ManageShop.this, "Data Saved SUccessfully ", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(ManageShop.this, "Data Saved Successfully ", Toast.LENGTH_LONG).show();
                                     }
                                 });
 
@@ -244,6 +273,7 @@ switch (view.getId()){
                         });
                     }
                 });
+                }
             }
         });
         model.setOwnerContact(ownerContact.getText().toString().trim());
@@ -257,7 +287,7 @@ switch (view.getId()){
         reference.setValue(model).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                Log.w(TAG, "Data SAved");
+                Log.w(TAG, "Data Saved");
             }
         });
     }catch (Exception e){

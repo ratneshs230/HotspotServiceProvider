@@ -46,7 +46,7 @@ public class UploadPan extends AppCompatActivity implements View.OnClickListener
     Uri imageUri;
     ImageView PanIV;
     Button upload;
-    String uid;
+    String uid,phone;
     FirebaseAuth mAuth;
     String TAG="UPLOADPAN";
     @Override
@@ -61,7 +61,9 @@ try {
         mAuth = FirebaseAuth.getInstance();
         uid = mAuth.getCurrentUser().getUid();
 
+
     }
+    phone=userPref.getString("Phone","");
 
     cameraPermission = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     storagePermission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -171,7 +173,7 @@ try {
 
     private void storeOnDB() {
 
-        final DatabaseReference reff = FirebaseDatabase.getInstance().getReference().child("Partner").child(uid).child("Documents").child("Pan_CardDetails");
+        final DatabaseReference reff = FirebaseDatabase.getInstance().getReference().child("Partner").child(phone).child("Documents").child("Pan_CardDetails");
 
         DatabaseReference PanRef= FirebaseDatabase.getInstance().getReference();
         StorageReference PanStorage= FirebaseStorage.getInstance().getReference().child(uid)

@@ -107,17 +107,14 @@ try {
     }
 
     private void storeOnDB() {
-
+    try {
         final DatabaseReference reff = FirebaseDatabase.getInstance().getReference().child("Partner").child(uid).child("Documents").child("AadharDetails");
 
-        adharRef= FirebaseDatabase.getInstance().getReference();
-        adharStorage=FirebaseStorage.getInstance().getReference().child(uid)
+        adharRef = FirebaseDatabase.getInstance().getReference();
+        adharStorage = FirebaseStorage.getInstance().getReference().child(uid)
                 .child("Aadhar");
-        StorageReference adharFront=adharStorage.child("Front");
-        StorageReference adharBack=adharStorage.child("Back");
-
-
-
+        StorageReference adharFront = adharStorage.child("Front");
+        StorageReference adharBack = adharStorage.child("Back");
 
 
         final String[] path = new String[1];
@@ -125,7 +122,7 @@ try {
         adharBack.putFile(backUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Toast.makeText(UploadAAdhar.this,"BackUploadSuccessful",Toast.LENGTH_SHORT).show();
+                Toast.makeText(UploadAAdhar.this, "BackUploadSuccessful", Toast.LENGTH_SHORT).show();
 
                 Task<Uri> downloadUri = taskSnapshot.getStorage().getDownloadUrl();
                 downloadUri.addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -144,7 +141,7 @@ try {
         adharFront.putFile(frontUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Toast.makeText(UploadAAdhar.this,"FrontUploadSuccessful",Toast.LENGTH_SHORT).show();
+                Toast.makeText(UploadAAdhar.this, "FrontUploadSuccessful", Toast.LENGTH_SHORT).show();
                 Task<Uri> downloadUri = taskSnapshot.getStorage().getDownloadUrl();
                 downloadUri.addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
@@ -155,12 +152,14 @@ try {
                         reff.updateChildren(imageObject);
 
 
-
                     }
                 });
 
             }
         });
+    }catch(Exception e){
+        e.printStackTrace();
+    }
 
 
     }

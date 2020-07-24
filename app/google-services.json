@@ -1,42 +1,50 @@
 {
   "project_info": {
-    "project_number": "937114664825",
-    "firebase_url": "https://kikit-3f250.firebaseio.com",
-    "project_id": "kikit-3f250",
-    "storage_bucket": "kikit-3f250.appspot.com"
+    "project_number": "342006324134",
+    "firebase_url": "https://hotspot-customer.firebaseio.com",
+    "project_id": "hotspot-customer",
+    "storage_bucket": "hotspot-customer.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:937114664825:android:d3606e8677f3c9bc3839a8",
+        "mobilesdk_app_id": "1:342006324134:android:2339e9a9e3e544b18c4d67",
         "android_client_info": {
-          "package_name": "com.example.kikit"
+          "package_name": "com.Hotspot.hotspotdrive"
         }
       },
       "oauth_client": [
         {
-          "client_id": "937114664825-gb0f0dft6eum494ricjvhlso9sbpo2r7.apps.googleusercontent.com",
+          "client_id": "342006324134-4tmcqqcmrj57aspedo2e4ij2jfoikmq6.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.kikit",
-            "certificate_hash": "b1f66e0bbbd344287862982369753461e7ca347e"
+            "package_name": "com.Hotspot.hotspotdrive",
+            "certificate_hash": "16e447f2ddcdae2ed95b90e1dec78e2d5a4c5ac3"
           }
         },
         {
-          "client_id": "937114664825-0ssg36c1n7duj64k3bt42elvsnl89i2j.apps.googleusercontent.com",
+          "client_id": "342006324134-9etfu74vggoaekcjrlk9v4tgp4r4v2v8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.Hotspot.hotspotdrive",
+            "certificate_hash": "ec4704e4292572a9e91b43fa70978155effd93f8"
+          }
+        },
+        {
+          "client_id": "342006324134-0nej2s4jr4c0reukag59pg6nskqlcmit.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCPq0_ViF1AMNdKRu8zXgVQVVM6JzR12sQ"
+          "current_key": "AIzaSyAfZBMQ249pEPC32oMfncjLQW-5ii9qacE"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "937114664825-0ssg36c1n7duj64k3bt42elvsnl89i2j.apps.googleusercontent.com",
+              "client_id": "342006324134-0nej2s4jr4c0reukag59pg6nskqlcmit.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
@@ -45,27 +53,109 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:937114664825:android:4edecf1aa57332e43839a8",
+        "mobilesdk_app_id": "1:342006324134:android:9418454c83458c748c4d67",
         "android_client_info": {
-          "package_name": "com.ratnesh.hotspotserviceprovider"
+          "package_name": "com.hotspot.hotspot"
         }
       },
       "oauth_client": [
         {
-          "client_id": "937114664825-0ssg36c1n7duj64k3bt42elvsnl89i2j.apps.googleusercontent.com",
+          "client_id": "342006324134-dgncr8p1a43nfboe8l8j9pdqiboibon7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hotspot.hotspot",
+            "certificate_hash": "35f7b20383c4e118a100872289106d195505fe6f"
+          }
+        },
+        {
+          "client_id": "342006324134-0nej2s4jr4c0reukag59pg6nskqlcmit.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCPq0_ViF1AMNdKRu8zXgVQVVM6JzR12sQ"
+          "current_key": "AIzaSyAfZBMQ249pEPC32oMfncjLQW-5ii9qacE"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "937114664825-0ssg36c1n7duj64k3bt42elvsnl89i2j.apps.googleusercontent.com",
+              "client_id": "342006324134-0nej2s4jr4c0reukag59pg6nskqlcmit.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:342006324134:android:abc4149fae35105d8c4d67",
+        "android_client_info": {
+          "package_name": "com.hotspot.hotspotadmin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "342006324134-n4ilkjg71lc10m28c39h85ur70r0o5dn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hotspot.hotspotadmin",
+            "certificate_hash": "ec4704e4292572a9e91b43fa70978155effd93f8"
+          }
+        },
+        {
+          "client_id": "342006324134-0nej2s4jr4c0reukag59pg6nskqlcmit.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfZBMQ249pEPC32oMfncjLQW-5ii9qacE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "342006324134-0nej2s4jr4c0reukag59pg6nskqlcmit.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:342006324134:android:0f54585dfbff73668c4d67",
+        "android_client_info": {
+          "package_name": "com.hotspot.hotspotserviceprovider"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "342006324134-fgeui3e3q3mss9vdd2b0qm0jet7t8k6u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hotspot.hotspotserviceprovider",
+            "certificate_hash": "ec4704e4292572a9e91b43fa70978155effd93f8"
+          }
+        },
+        {
+          "client_id": "342006324134-0nej2s4jr4c0reukag59pg6nskqlcmit.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfZBMQ249pEPC32oMfncjLQW-5ii9qacE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "342006324134-0nej2s4jr4c0reukag59pg6nskqlcmit.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

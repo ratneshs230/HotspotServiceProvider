@@ -15,6 +15,23 @@ public class ServiceUserModel {
     private String WalletBalance;
     private String ReferralCode;
     private String ReferredBy;
+    private  String State,City;
+
+    public String getState() {
+        return State;
+    }
+
+    public void setState(String state) {
+        State = state;
+    }
+
+    public String getCity() {
+        return City;
+    }
+
+    public void setCity(String city) {
+        City = city;
+    }
 
     public String getReferralCode() {
         return ReferralCode;

@@ -122,7 +122,7 @@ try {
                                     intent = new Intent(OtpActivity.this, AllServices.class);
 
                                 } else {
-                                    intent = new Intent(OtpActivity.this, AllServices.class);
+                                    intent = new Intent(OtpActivity.this, UserDetailsEdit.class);
 
                                 }
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -172,7 +172,7 @@ try {
 
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
                 number,
-                120,
+                60,
                 TimeUnit.SECONDS,
                 TaskExecutors.MAIN_THREAD,
                 mCallBack

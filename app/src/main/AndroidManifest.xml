@@ -8,6 +8,8 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/partnerlogo"
@@ -15,10 +17,13 @@
         android:roundIcon="@drawable/partnerlogo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".AddProduct"></activity>
+        <activity android:name=".UpdateProfile" />
+        <activity android:name=".ManageProducts" />
         <activity
             android:name=".DashBoardActivity"
             android:label="@string/title_activity_dash_board"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".MyOrders" />
         <activity android:name=".EmergencyContact" />
         <activity android:name=".FeedbackRatings" />

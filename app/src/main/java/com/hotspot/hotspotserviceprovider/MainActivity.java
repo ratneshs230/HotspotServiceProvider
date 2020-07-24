@@ -1,14 +1,12 @@
 package com.hotspot.hotspotserviceprovider;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 
-import com.google.firebase.auth.FirebaseAuth;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
@@ -24,18 +22,15 @@ public class MainActivity extends AppCompatActivity {
 
             SharedPreferences authPref = getSharedPreferences("PartnerPref", MODE_PRIVATE);
             boolean loginState = authPref.getBoolean("Login_State", false);
-            String uid = authPref.getString("uid", "");
-
-            user = FirebaseAuth.getInstance().getCurrentUser();
-            Log.w(TAG, "FirebaseUser=>" + user);
 
 
-            if (loginState && user != null) {
-                intent = new Intent(MainActivity.this, DashBoardActivity.class);
-                intent.putExtra("uid", uid);
+
+
+            if (loginState ) {
+                intent = new Intent(MainActivity.this, AllServices.class);
             } else {
 
-                intent = new Intent(MainActivity.this, DashBoardActivity.class);
+                intent = new Intent(MainActivity.this, PhoneNumberActivity.class);
 
             }
             new Handler().postDelayed(new Runnable() {

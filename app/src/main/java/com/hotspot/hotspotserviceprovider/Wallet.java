@@ -23,7 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 public class Wallet extends AppCompatActivity {
     LinearLayout walletLayout;
     TextView walletBalance;
-    String uid;
+    String phone;
     DatabaseReference ref;
     String TAG="Wallet";
     ServiceUserModel model;
@@ -33,12 +33,12 @@ public class Wallet extends AppCompatActivity {
         setContentView(R.layout.activity_wallet);
         try {
             SharedPreferences userPref = getSharedPreferences("PartnerPref", MODE_PRIVATE);
-            uid = userPref.getString("uid", "");
+            phone = userPref.getString("Phone", "");
 
             walletLayout = findViewById(R.id.walletLayout);
             walletBalance = findViewById(R.id.walletBalance);
 
-            ref = FirebaseDatabase.getInstance().getReference().child("Partner").child(uid);
+            ref = FirebaseDatabase.getInstance().getReference().child("Partner").child(phone);
 
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -65,9 +65,11 @@ public class Wallet extends AppCompatActivity {
             ref.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.exists()){
                     Log.w(TAG, "DataSnapshot=>" + dataSnapshot);
                     model = dataSnapshot.getValue(ServiceUserModel.class);
                     walletBalance.setText(model.getWalletBalance());
+                    }
                 }
 
                 @Override
