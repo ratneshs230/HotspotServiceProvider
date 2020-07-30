@@ -2,25 +2,17 @@ package com.hotspot.hotspotserviceprovider;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.AlertDialog;
-import android.app.FragmentManager;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -31,6 +23,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.hotspot.hotspotserviceprovider.modelClasses.ProductsModel;
 import com.squareup.picasso.Picasso;
 
 public class ManageProducts extends AppCompatActivity implements View.OnClickListener{
@@ -41,6 +34,7 @@ public class ManageProducts extends AppCompatActivity implements View.OnClickLis
     RecyclerView productsRecycler;
     LinearLayoutManager layoutManager;
     ProductsModel model;
+    String uid;
 
     FirebaseRecyclerAdapter adapter;
     @Override
@@ -49,6 +43,7 @@ public class ManageProducts extends AppCompatActivity implements View.OnClickLis
         setContentView(R.layout.activity_manage_products);
         try {
             SharedPreferences pref = getSharedPreferences("PartnerPref", MODE_PRIVATE);
+            uid=pref.getString("uid","");
             phone = pref.getString("Phone", "");
             if (phone.equals("")) {
                 phone = "unknown";
@@ -71,7 +66,7 @@ public class ManageProducts extends AppCompatActivity implements View.OnClickLis
 
     public  void fetchProducts(){
 
-        Query query= FirebaseDatabase.getInstance().getReference().child("Products");
+        Query query= FirebaseDatabase.getInstance().getReference().child("Products").child(uid);
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

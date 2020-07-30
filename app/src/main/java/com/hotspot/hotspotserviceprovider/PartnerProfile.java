@@ -3,6 +3,9 @@ package com.hotspot.hotspotserviceprovider;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+
+
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -18,6 +21,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.hotspot.hotspotserviceprovider.modelClasses.ServiceUserModel;
 import com.squareup.picasso.Picasso;
 
 public class PartnerProfile extends AppCompatActivity implements View.OnClickListener{
@@ -27,6 +31,7 @@ public class PartnerProfile extends AppCompatActivity implements View.OnClickLis
     DatabaseReference ref;
     ServiceUserModel model;
     String TAG="Profile";
+    String phone;
     TextView Signout;
 ProgressBar progress;
     @Override
@@ -39,8 +44,10 @@ try {
     if (null == uid) {
         SharedPreferences pref = getSharedPreferences("PartnerPref", MODE_PRIVATE);
         uid = pref.getString("uid", "");
-    }
+        phone=pref.getString("Phone","");
 
+    }
+    Log.w(TAG,"PartnerProfile=>"+uid);
     Signout = findViewById(R.id.signOut);
     progress = findViewById(R.id.progress);
     profileImg = findViewById(R.id.ProfilePicture);
@@ -57,7 +64,7 @@ try {
 
     model = new ServiceUserModel();
 
-    ref = FirebaseDatabase.getInstance().getReference().child("Partner").child(uid);
+    ref = FirebaseDatabase.getInstance().getReference().child("Partner").child(phone);
 
     ref.addValueEventListener(new ValueEventListener() {
         @Override
@@ -66,7 +73,6 @@ try {
             if (dataSnapshot.exists()) {
                 progress.setVisibility(View.GONE);
                 model = dataSnapshot.getValue(ServiceUserModel.class);
-
 
                 Picasso.get().load(model.getProfileimage()).into(profileImg);
                 username.setText(model.getName());
@@ -83,6 +89,7 @@ try {
 }
 
     }
+
 
     @Override
     public void onClick(View view) {

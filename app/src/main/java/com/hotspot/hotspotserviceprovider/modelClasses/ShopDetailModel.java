@@ -1,7 +1,15 @@
-package com.hotspot.hotspotserviceprovider;
+package com.hotspot.hotspotserviceprovider.modelClasses;
 
 public class ShopDetailModel {
-    String image,ownerName,shopName,ownerContact,shopCategory,ownerMail,shopAddress,state,city;
+    String image,ownerName,shopName,ownerContact,shopCategory,ownerMail,shopAddress,state,city,pushkey;
+
+    public String getPushkey() {
+        return pushkey;
+    }
+
+    public void setPushkey(String pushkey) {
+        this.pushkey = pushkey;
+    }
 
     public String getImage() {
         return image;

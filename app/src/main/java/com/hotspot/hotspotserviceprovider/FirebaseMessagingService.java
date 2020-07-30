@@ -8,13 +8,16 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 public class FirebaseMessagingService extends com.google.firebase.messaging.FirebaseMessagingService {
+
 
     String TAG="FirebaseMessagingService";
 
@@ -26,9 +29,12 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
     private void sendRegistrationToServer(String token) {
         // TODO: Implement this method to send token to your app server.
     }
-
-    private void sendNotification(String messageBody) {
-        Intent intent = new Intent(this, MainActivity.class);
+    private void getJob(){
+         //FirebaseDatabase.getInstance().getReference().child("Rider").child("")
+    }
+    private  void sendNotification(String messageBody) {
+        Log.w(TAG,"FirebaseNotification");
+        Intent intent = new Intent(this, ManageProducts.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);

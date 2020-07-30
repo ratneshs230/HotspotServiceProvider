@@ -40,7 +40,7 @@ public class UpdateGSTDetails extends AppCompatActivity {
     EditText gstNo;
     Button upload;
     String gst,uid;
-    ImageView gstImg;
+//    ImageView gstImg;
     DatabaseReference ref;
     Map<String, Object> gstObject = new HashMap<>();
 
@@ -62,19 +62,19 @@ try {
     SharedPreferences userPref = getSharedPreferences("PartnerPref", MODE_PRIVATE);
     uid = userPref.getString("uid", "");
 
-    gstImg = findViewById(R.id.gstImg);
+//    gstImg = findViewById(R.id.gstImg);
     gstNo = findViewById(R.id.gstNo);
     upload = findViewById(R.id.upload);
 
     cameraPermission = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     storagePermission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
-    gstImg.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            showImageImportDialog();
-        }
-    });
+//    gstImg.setOnClickListener(new View.OnClickListener() {
+//        @Override
+//        public void onClick(View view) {
+//            showImageImportDialog();
+//        }
+//    });
 
     ref = FirebaseDatabase.getInstance().getReference().child("Partner").child(uid).child("Documents").child("GST_Details");
     upload.setOnClickListener(new View.OnClickListener() {
@@ -87,10 +87,10 @@ try {
             } else
                 gstObject.put("GST_Number", gst);
 
-            if (gstImg.getDrawable() != null) {
-
-                storeImageOnDb();
-            }
+//            if (gstImg.getDrawable() != null) {
+//
+//                storeImageOnDb();
+//            }
 
 
             ref.updateChildren(gstObject);
@@ -236,8 +236,8 @@ try {
                 if (resultCode == RESULT_OK) {
                     imageUri = result.getUri();
 
-                        gstImg.setImageURI(imageUri);
-                        Picasso.get().load(imageUri).into(gstImg);
+//                        gstImg.setImageURI(imageUri);
+//                        Picasso.get().load(imageUri).into(gstImg);
                         Log.w(TAG, "ResultUri=>" + imageUri);
 
 

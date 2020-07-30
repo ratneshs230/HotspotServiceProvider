@@ -1,23 +1,14 @@
 package com.hotspot.hotspotserviceprovider;
 
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
-
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -34,6 +25,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -43,6 +41,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.hotspot.hotspotserviceprovider.modelClasses.ServiceUserModel;
 import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -50,7 +49,7 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import java.util.HashMap;
 import java.util.Map;
 
-public class UserDetailsEdit extends AppCompatActivity implements  View.OnClickListener, AdapterView.OnItemSelectedListener{
+public class UserDetailsEdit extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
 
     private static final int CAMERA_REQUEST_CODE = 100;
@@ -60,16 +59,16 @@ public class UserDetailsEdit extends AppCompatActivity implements  View.OnClickL
 
     String cameraPermission[];
     String storagePermission[];
-    EditText name,phn, add1,add2,mail,refferalCode;
+    EditText name, phn, add1, add2, mail, refferalCode;
     Button save;
-    String uid,phoneNumber,type;
-    String key,TAG="UserDetails";
+    String uid, phoneNumber, type;
+    String key, TAG = "UserDetails";
     ServiceUserModel model;
-    ImageView profileImg,addImg;
-    TextView drop_type,referralLayout;
+    ImageView profileImg, addImg;
+    TextView drop_type, referralLayout;
     FirebaseDatabase db;
     DatabaseReference reff;
-    private Spinner serviceSpinner,partnerSpinner;
+    private Spinner serviceSpinner, partnerSpinner;
     FirebaseAuth mAuth;
     Uri imageUri;
     StorageReference ImageRef;
@@ -78,6 +77,7 @@ public class UserDetailsEdit extends AppCompatActivity implements  View.OnClickL
     ArrayAdapter<String> cityAdapter;
     String cityName, stateName;
     SharedPreferences pref;
+    SharedPreferences.Editor edit;
     private String[] stateSpinner = new String[]{
             "Select State", "Delhi NCR", "Uttar Pradesh", "Rajasthan"};
     private String[] delhiSpinner = new String[]{
@@ -86,104 +86,100 @@ public class UserDetailsEdit extends AppCompatActivity implements  View.OnClickL
             "Select City", "Agra", "Noida", "Lucknow"};
     private String[] rajasthanSpinner = new String[]{
             "Select City", "Jaipur"};
-    Spinner state,city;
+    Spinner state, city;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_details_edit);
-try {
-    Intent i = getIntent();
-    pref=getSharedPreferences("PartnerPref",MODE_PRIVATE);
+        try {
+            Intent i = getIntent();
+            pref = getSharedPreferences("PartnerPref", MODE_PRIVATE);
+            edit = pref.edit();
+            mAuth = FirebaseAuth.getInstance();
 
-       mAuth = FirebaseAuth.getInstance();
 
+            uid = pref.getString("uid", "");
 
-        uid=pref.getString("uid","");
+            phoneNumber = pref.getString("Phone", "");
 
-        phoneNumber=pref.getString("Phone","");
+            Log.w(TAG, "UID RECIEVED-=>" + uid);
 
-    Log.w(TAG, "UID RECIEVED-=>" + uid);
+            name = findViewById(R.id.UserFullName);
+            add1 = findViewById(R.id.address1);
+            add2 = findViewById(R.id.address2);
+            mail = findViewById(R.id.mail);
+            phn = findViewById(R.id.phn);
+            save = findViewById(R.id.saveBtn);
+            profileImg = findViewById(R.id.profile_image);
+            addImg = findViewById(R.id.addImage);
+            refferalCode = findViewById(R.id.referralCode);
+            state = findViewById(R.id.state);
+            city = findViewById(R.id.city);
 
-    name = findViewById(R.id.UserFullName);
-    add1 = findViewById(R.id.address1);
-    add2 = findViewById(R.id.address2);
-    mail = findViewById(R.id.mail);
-    phn = findViewById(R.id.phn);
-    save = findViewById(R.id.saveBtn);
-    profileImg = findViewById(R.id.profile_image);
-    addImg = findViewById(R.id.addImage);
-    refferalCode = findViewById(R.id.referralCode);
-    state = findViewById(R.id.state);
-    city = findViewById(R.id.city);
+            phn.setText(phoneNumber);
 
-    phn.setText(phoneNumber);
+            model = new ServiceUserModel();
 
-    model = new ServiceUserModel();
+            ArrayAdapter<String> adapter = new ArrayAdapter(this,
+                    android.R.layout.simple_spinner_item, stateSpinner);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-    ArrayAdapter<String> adapter = new ArrayAdapter(this,
-            android.R.layout.simple_spinner_item, stateSpinner);
-    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            state.setAdapter(adapter);
+            state.setOnItemSelectedListener(this);
 
-    state.setAdapter(adapter);
-    state.setOnItemSelectedListener(this);
+            cameraPermission = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+            storagePermission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
-    cameraPermission = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
-    storagePermission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
-
-    save.setOnClickListener(this);
-    addImg.setOnClickListener(this);
-}catch (Exception e){
-    e.printStackTrace();
-}
+            save.setOnClickListener(this);
+            addImg.setOnClickListener(this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void onClick(View view) {
 
-        switch(view.getId()){
-            case R.id.addImage:{
-                Log.w(TAG,"AddimagePressed");
+        switch (view.getId()) {
+            case R.id.addImage: {
+                Log.w(TAG, "AddimagePressed");
                 showImageImportDialog();
 
                 break;
             }
-            case R.id.saveBtn:{
+            case R.id.saveBtn: {
 
                 if (TextUtils.isEmpty(name.getText().toString().trim())) {
                     name.setError("Name is Required");
                     name.requestFocus();
-                }
-                else if (TextUtils.isEmpty(add1.getText().toString().trim())) {
+                } else if (TextUtils.isEmpty(add1.getText().toString().trim())) {
                     add1.setError("House number/Apartment Number is Required");
                     add1.requestFocus();
                 } else if (TextUtils.isEmpty(add2.getText().toString().trim())) {
                     add2.setError("Area/Block is Required");
                     add2.requestFocus();
-                }else if(TextUtils.isEmpty(phn.getText().toString().trim())) {
+                } else if (TextUtils.isEmpty(phn.getText().toString().trim())) {
                     phn.setError("Phone Number is required");
-                }
-                else if(TextUtils.isEmpty(mail.getText().toString().trim())){
+                } else if (TextUtils.isEmpty(mail.getText().toString().trim())) {
                     mail.setError("Mail is mandatory");
                     mail.requestFocus();
+                } else if (stateName.equals("Select State")) {
+                    Toast.makeText(UserDetailsEdit.this, "Please Select State", Toast.LENGTH_SHORT).show();
+                } else if (cityName.equals("Select City")) {
+                    Toast.makeText(UserDetailsEdit.this, "Please Select City", Toast.LENGTH_SHORT).show();
                 }
-                else if(stateName.equals("Select State")){
-                    Toast.makeText(UserDetailsEdit.this,"Please Select State",Toast.LENGTH_SHORT).show();
-                }else if(cityName.equals("Select City")){
-                    Toast.makeText(UserDetailsEdit.this,"Please Select City",Toast.LENGTH_SHORT).show();
+                else if(imageUri==null) {
+
+                    Toast.makeText(UserDetailsEdit.this,"Profile Pic Select", Toast.LENGTH_SHORT).show();
                 }
-                    else{
-
-                        storeDataOnDb();
-
-                    }
+                else
+                    storeDataOnDb();
+                }
                 break;
-                }
-
+            }
         }
-
-    }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
@@ -230,12 +226,12 @@ try {
 
     }
 
-        //permissionCheck
-        private boolean checkStoragePermission() {
-            boolean resultStorage = ContextCompat.checkSelfPermission(this,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE) == (PackageManager.PERMISSION_GRANTED);
-            return resultStorage;
-        }
+    //permissionCheck
+    private boolean checkStoragePermission() {
+        boolean resultStorage = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) == (PackageManager.PERMISSION_GRANTED);
+        return resultStorage;
+    }
 
     private boolean checkCameraPermission() {
 
@@ -252,8 +248,9 @@ try {
     private void requestStoragePermission() {
         ActivityCompat.requestPermissions(this, storagePermission, STORAGE_REQUEST_CODE);
     }
-        private void requestCameraPermission() {
-            ActivityCompat.requestPermissions(this, cameraPermission, CAMERA_REQUEST_CODE);
+
+    private void requestCameraPermission() {
+        ActivityCompat.requestPermissions(this, cameraPermission, CAMERA_REQUEST_CODE);
 
 
     }
@@ -279,9 +276,6 @@ try {
     }
 
 
-
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         try {
@@ -291,43 +285,46 @@ try {
             Log.w(TAG, "ResultCode=>" + resultCode);
             Log.w(TAG, "RequestCode=>" + requestCode);
 
-                if (resultCode == RESULT_OK) {
-                    if (requestCode == OPTION_GALLERY_CODE) {
-                        CropImage.activity(data.getData())
-                                .setGuidelines(CropImageView.Guidelines.ON)
-                                .start(this);
-                        Log.w(TAG, "GalleryImage");
-
-                    }
-                    if (requestCode == OPTION_CAMERA_CODE) {
-                        CropImage.activity(imageUri)
-                                .setGuidelines(CropImageView.Guidelines.ON)
-                                .start(this);
-                        Log.w(TAG, "CameraImage");
-                    }
-                }
-                if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-                    CropImage.ActivityResult result = CropImage.getActivityResult(data);
-                    if (resultCode == RESULT_OK) {
-                        imageUri = result.getUri();
-                        profileImg.setImageURI(imageUri);
-                        Picasso.get().load(imageUri).into(profileImg);
-                        Log.w(TAG, "ResultUri=>" + imageUri);
-
-
-                    } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                        Exception e = result.getError();
-                        Toast.makeText(UserDetailsEdit.this, e + "", Toast.LENGTH_LONG).show();
-
-                    }
+            if (resultCode == RESULT_OK) {
+                if (requestCode == OPTION_GALLERY_CODE) {
+                    CropImage.activity(data.getData())
+                            .setGuidelines(CropImageView.Guidelines.ON)
+                            .start(this);
+                    Log.w(TAG, "GalleryImage");
 
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+                if (requestCode == OPTION_CAMERA_CODE) {
+                    CropImage.activity(imageUri)
+                            .setGuidelines(CropImageView.Guidelines.ON)
+                            .start(this);
+                    Log.w(TAG, "CameraImage");
+                }
             }
+            if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+                CropImage.ActivityResult result = CropImage.getActivityResult(data);
+                if (resultCode == RESULT_OK) {
+                    imageUri = result.getUri();
+                    Bitmap bitmap=result.getBitmap();
+
+                    //Bitmap bitmap = Bitmap.createBitmap(result.getBitmap());
+                    //Log.w(TAG,"Bitmap=>"+bitmap);
+                    profileImg.setImageURI(imageUri);
+                    Picasso.get().load(imageUri).into(profileImg);
+                    Log.w(TAG, "ResultBitmap=>" + bitmap);
+
+
+                } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                    Exception e = result.getError();
+                    Toast.makeText(UserDetailsEdit.this, e + "", Toast.LENGTH_LONG).show();
+
+                }
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
-
 
 
     private void storeDataOnDb() {
@@ -336,46 +333,59 @@ try {
             String pushkey = reff.push().getKey();
 
             ImageRef = FirebaseStorage.getInstance().getReference().child(uid)
-                    .child("UserDp").child(uid);
+                    .child("UserDp");
             final String[] path = new String[1];
-if(imageUri!=null){
-            ImageRef.putFile(imageUri).addOnSuccessListener(this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+            if (imageUri != null) {
+                ImageRef.putFile(imageUri).addOnSuccessListener(this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                    Log.w(TAG, "image Uploaded Successfully");
-                    Task<Uri> downloadUri = taskSnapshot.getStorage().getDownloadUrl();
+                        Log.w(TAG, "image Uploaded Successfully");
+                        Task<Uri> downloadUri = taskSnapshot.getStorage().getDownloadUrl();
 
-                    downloadUri.addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            path[0] = uri.toString();
+                        downloadUri.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                path[0] = uri.toString();
 
-                            Map<String, Object> imageObject = new HashMap<>();
-                            imageObject.put("Profileimage", path[0]);
-
-
-                            model.setProfileimage(path[0]);
-
-                            Log.w(TAG, "URI=====>>>" + uri);
-                            Log.w(TAG, "Path=====>>>" + path[0]);
+                                Map<String, Object> imageObject = new HashMap<>();
+                                imageObject.put("Profileimage", path[0]);
 
 
-                            reff.updateChildren(imageObject);
+                                model.setProfileimage(path[0]);
 
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.w(TAG, "Image linking failed");
-                            Toast.makeText(UserDetailsEdit.this, "Error Uploading File", Toast.LENGTH_LONG).show();
+                                Log.w(TAG, "URI=====>>>" + uri);
+                                Log.w(TAG, "Path=====>>>" + path[0]);
 
-                        }
-                    });
-                }
-            });
-}
+
+                                reff.updateChildren(imageObject).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        Intent intent = new Intent(UserDetailsEdit.this, AllServices.class);
+                                        startActivity(intent);
+                                    }
+                                });
+
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.w(TAG, "Image linking failed");
+                                Toast.makeText(UserDetailsEdit.this, "Error Uploading File", Toast.LENGTH_LONG).show();
+
+                            }
+                        });
+                    }
+                });
+            }else Log.w(TAG,"IMageUri Empty");
+
             String Name = name.getText().toString();
+
+            edit.putString("userName", Name);
+            edit.putString("add1", add1.getText().toString().trim());
+            edit.putString("add2", add2.getText().toString().trim());
+            edit.putString("mail", mail.getText().toString().trim());
+            edit.apply();
             Log.w(TAG, "NAMe==>" + Name);
             model.setName(Name);
             model.setMail(mail.getText().toString());
@@ -393,12 +403,11 @@ if(imageUri!=null){
             reff.setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void Void) {
-                    Intent intent = new Intent(UserDetailsEdit.this, AllServices.class);
-                    startActivity(intent);
+
                 }
             });
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -421,14 +430,12 @@ if(imageUri!=null){
                 stateName = "Uttar Pradesh";
 
 
-
                 //up
             } else if (i == 3) {
                 stateChoice = 3;
                 cityAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, rajasthanSpinner);
                 cityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 stateName = "Rajasthan";
-
 
 
                 //Rajasthan
@@ -442,11 +449,11 @@ if(imageUri!=null){
 
             Log.w(TAG, "cityName=>" + cityName);
         }
-        }
+    }
 
 
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
-            type="CallForALl";
+        type = "CallForALl";
     }
 }

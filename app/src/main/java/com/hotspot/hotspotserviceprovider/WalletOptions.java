@@ -16,6 +16,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.hotspot.hotspotserviceprovider.modelClasses.ServiceUserModel;
 
 public class WalletOptions extends AppCompatActivity implements View.OnClickListener{
     TextView balance;
@@ -24,6 +25,7 @@ public class WalletOptions extends AppCompatActivity implements View.OnClickList
     DatabaseReference ref;
     ServiceUserModel model;
    String TAG="WalletOptions";
+   String phone;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,12 +33,13 @@ public class WalletOptions extends AppCompatActivity implements View.OnClickList
         try {
             SharedPreferences userPref = getSharedPreferences("PartnerPref", MODE_PRIVATE);
             uid = userPref.getString("uid", "");
-
+            phone=userPref.getString("Phone","");
             balance = findViewById(R.id.balance);
             statement = findViewById(R.id.statementRequest);
             send = findViewById(R.id.sentToBank);
             add = findViewById(R.id.addMoney);
-            ref = FirebaseDatabase.getInstance().getReference().child("Partner").child(uid);
+            ref = FirebaseDatabase.getInstance().getReference().child("Partner").child(phone);
+
             model = new ServiceUserModel();
 
             ref.addValueEventListener(new ValueEventListener() {

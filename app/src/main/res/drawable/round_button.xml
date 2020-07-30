@@ -11,11 +11,11 @@
     </item>
 
     <item android:id="@android:id/background">
-        <shape android:shape="rectangle">
+        <shape android:shape="rectangle">1
             <gradient
                 android:angle="90"
-                android:endColor="@color/cardview_light_background"
-                android:startColor="#ffffff"
+                android:endColor="@color/common_google_signin_btn_text_dark_disabled"
+                android:startColor="#8E8989"
                 android:type="linear" />
             <stroke android:color="@color/colorPrimary"
                 android:width="2dp"/>

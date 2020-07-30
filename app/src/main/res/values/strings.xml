@@ -19,6 +19,27 @@
     <string name="menu_slideshow">Slideshow</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="submit">Sumbit</string>
+    <string name="agree">I Agree to Hotspot terms and\n conditions</string>
+    <string name="otp">Enter OTP</string>
+    <string name="resend">Resend OTP</string>
+    <string name="head_enter_num">Please Enter your Phone \nNumber to Proceed</string>
+    <string name="enter_num">Enter Your Mobile Number</string>
+    <string name="c_buss_apply">I have applied PanCard for my Registered Business</string>
+    <string name="c_buss_dont">I don\'t have</string>
+    <string name="c_buss_have">I have a PanCard </string>
+    <string name="prsnl_have">I have PanCard</string>
+    <string name="prsnl_dont">I don\'t have</string>
+    <string name="head_busi">Upload Business PanCard</string>
+    <string name="head_prsnl">Upload Personal PanCard</string>
+    <string name="pan_num">Pan Card Number</string>
+    <string name="head_aadhar">Upload Aadhar</string>
+    <string name="tv_front_aadhar">Front View</string>
+    <string name="tv_back_aadhar">Back View</string>
+    <string name="head_gst">Add Your GST Number</string>
+    <string name="gst_num">Enter Your GST Number</string>
+    <string name="gst_have">I have GST Num</string>
+    <string name="head_bank">Add Bank Detail</string>
 
 
 </resources>

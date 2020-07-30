@@ -6,9 +6,10 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
 public class DocumentsUpdate extends AppCompatActivity implements View.OnClickListener{
-ConstraintLayout bankDetailsUpdate,PanCardUpdate,gstDetailUpdate,adharDetailsUpdate;
+TextView bankDetailsUpdate,PanCardUpdate,gstDetailUpdate,adharDetailsUpdate;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,7 +29,14 @@ ConstraintLayout bankDetailsUpdate,PanCardUpdate,gstDetailUpdate,adharDetailsUpd
             e.printStackTrace();
         }
     }
-
+//    public void verify(){
+//        adharDetailsUpdate.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                adharDetailsUpdate.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_checked, 0);
+//            }
+//        });
+//    }
     @Override
     public void onClick(View view) {
         Intent intent;

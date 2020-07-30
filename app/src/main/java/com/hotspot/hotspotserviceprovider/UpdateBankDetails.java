@@ -33,7 +33,7 @@ try {
     bankBranchName = findViewById(R.id.bankBranchName);
     bankHolderName = findViewById(R.id.bankHolderName);
     bankIfsc = findViewById(R.id.bankIfsc);
-    Submit = findViewById(R.id.Submit);
+    Submit = findViewById(R.id.upload);
 
     Submit.setOnClickListener(new View.OnClickListener() {
         @Override

@@ -27,6 +27,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.hotspot.hotspotserviceprovider.modelClasses.ServiceUserModel;
+import com.hotspot.hotspotserviceprovider.modelClasses.TransactionModel;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -51,7 +53,7 @@ public class AddMoney extends AppCompatActivity {
     String userBalance;
     String rs;
     TransactionModel transactionModel;
-    String timeFormat[],time;
+    String timeFormat[],time,phone;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,16 +62,17 @@ public class AddMoney extends AppCompatActivity {
         model = new ServiceUserModel();
         SharedPreferences userPref = getSharedPreferences("PartnerPref", MODE_PRIVATE);
         uid = userPref.getString("uid", "");
+
         name = userPref.getString("userName", "");
         add1 = userPref.getString("add1", "");
         add2 = userPref.getString("add2", "");
         mail = userPref.getString("mail", "");
-        phn = userPref.getString("phn", "");
+        phn = userPref.getString("Phone", "");
         Log.w(TAG, "NAME=>" + name);
         rs = getString(R.string.Rs);
         transactionModel=new TransactionModel();
-        ref = FirebaseDatabase.getInstance().getReference().child("Partner").child(uid);
-        transactionsref=FirebaseDatabase.getInstance().getReference().child("Transactions").child(uid);
+        ref = FirebaseDatabase.getInstance().getReference().child("Partner").child(phn);
+        transactionsref=FirebaseDatabase.getInstance().getReference().child("Transactions").child(phn);
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -135,6 +138,8 @@ public class AddMoney extends AppCompatActivity {
     private void payUsingEaseBuzz() {
         String key = "2PBP7IABZ2";
         String salt = "DAH88E3UWQ";
+
+
         String text = amount.getText().toString();
         if (!text.isEmpty())
             try {

@@ -1,9 +1,5 @@
 package com.hotspot.hotspotserviceprovider;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -12,6 +8,10 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -19,6 +19,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.hotspot.hotspotserviceprovider.modelClasses.ServiceUserModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
@@ -34,8 +38,9 @@ public class AllServices extends AppCompatActivity implements View.OnClickListen
     SharedPreferences.Editor edit;
     String phoneNumber;
     FirebaseUser user;
-    LinearLayout manageShop,myOrder,Wallet,manageDoc,emergencyContact,feedbackRating,profileUpdate;
-
+    LinearLayoutManager linearLayoutManager;
+    LinearLayout manageShop,myOrder,Wallet,manageDoc,emergencyContact,feedbackRating,profileUpdate,logoutLayout;
+    RecyclerView adsRecycler;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,7 +53,7 @@ try {
     phoneNumber=pref.getString("Phone","");
     mAuth = FirebaseAuth.getInstance();
 
-    Log.w(TAG,"User=>"+user);
+    Log.w(TAG,"User=>"+mAuth.getCurrentUser());
     if (mAuth.getCurrentUser() == null) {
         Intent intent = new Intent(AllServices.this, PhoneNumberActivity.class);
         startActivity(intent);
@@ -59,7 +64,11 @@ try {
 
     model = new ServiceUserModel();
     fetchUserDetails(uid);
+
+
+
     //BottomNavBarCode
+    logoutLayout=findViewById(R.id.logoutLayout);
     profileUpdate=findViewById(R.id.profileUpdate);
     manageDoc=findViewById(R.id.manageDoc);
     manageShop=findViewById(R.id.manageShop);
@@ -68,6 +77,9 @@ try {
     feedbackRating=findViewById(R.id.feedbackRating);
     myOrder=findViewById(R.id.myOrder);
 
+
+    adsRecycler=findViewById(R.id.adsRecycler);
+    linearLayoutManager=new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,true);
     manageShop.setOnClickListener(this);
     manageDoc.setOnClickListener(this);
     Wallet.setOnClickListener(this);
@@ -75,17 +87,18 @@ try {
     feedbackRating.setOnClickListener(this);
     myOrder.setOnClickListener(this);
     profileUpdate.setOnClickListener(this);
+    logoutLayout.setOnClickListener(this);
     nav_home = findViewById(R.id.nav_Home);
     nav_profile = findViewById(R.id.nav_Profile);
     nav_withdraw = findViewById(R.id.nav_Withdraw);
 
+    runAd();
 
 
     nav_withdraw.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             intent = new Intent(AllServices.this, Wallet.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         }
     });
@@ -108,6 +121,18 @@ try {
     e.printStackTrace();
 }
 }
+
+    private void runAd() {
+
+
+        List<String> urls = new ArrayList<>();
+        urls.add("@drawable/block");
+        urls.add("@drawable/hlogo");
+
+
+
+    }
+
 
     private void checkDetails() {
         try {
@@ -208,6 +233,15 @@ try {
             }
             case R.id.myOrder:{
                 Intent intent=new Intent(AllServices.this,MyOrders.class);
+                startActivity(intent);
+                break;
+            }
+            case R.id.logoutLayout:{
+                FirebaseAuth.getInstance().signOut();
+                SharedPreferences pref=getSharedPreferences("PartnerPref",MODE_PRIVATE);
+                SharedPreferences.Editor edit=pref.edit();
+                edit.clear();
+                Intent intent=new Intent(AllServices.this,PhoneNumberActivity.class);
                 startActivity(intent);
                 break;
             }

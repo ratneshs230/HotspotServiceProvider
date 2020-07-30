@@ -74,7 +74,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Update Documents"
-                    android:drawableEnd="@drawable/ic_round_double_arrow_24"
+                    android:drawableEnd="@drawable/ic_baseline_double_arrow_24"
                     android:id="@+id/documentSetting"
                     />
 
@@ -102,7 +102,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="My Jobs"
-                    android:drawableEnd="@drawable/ic_round_double_arrow_24"
+                    android:drawableEnd="@drawable/ic_baseline_double_arrow_24"
 
                     android:id="@+id/jobSetting"
                     />
@@ -130,7 +130,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="My Wallet"
-                    android:drawableEnd="@drawable/ic_round_double_arrow_24"
+                    android:drawableEnd="@drawable/ic_baseline_double_arrow_24"
 
                     android:id="@+id/walletSetting"
                     />
@@ -153,7 +153,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="My Awards"
-                    android:drawableEnd="@drawable/ic_round_double_arrow_24"
+                    android:drawableEnd="@drawable/ic_baseline_double_arrow_24"
 
                     />
 

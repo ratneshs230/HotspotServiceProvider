@@ -11,6 +11,7 @@ import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -31,6 +32,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.hotspot.hotspotserviceprovider.modelClasses.ProductsModel;
 import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -45,14 +47,14 @@ public class AddProduct extends AppCompatActivity implements View.OnClickListene
     Uri imageUri;
     DatabaseReference reference;
     ProductsModel model;
-
+    String uid;
     private static final int CAMERA_REQUEST_CODE = 100;
     private static final int STORAGE_REQUEST_CODE = 200;
     private static final int OPTION_CAMERA_CODE = 1000;
     private static final int OPTION_GALLERY_CODE = 1001;
     private String[] cameraPermission;
     private String[] storagePermission;
-
+    SharedPreferences pref;
     String TAG="AddProductFragment";
     private String phone;
     private String mParam2;
@@ -64,6 +66,8 @@ public class AddProduct extends AppCompatActivity implements View.OnClickListene
         name=findViewById(R.id.productName);
         description=findViewById(R.id.productDesc);
         price=findViewById(R.id.productPrice);
+        pref=getSharedPreferences("PartnerPref", MODE_PRIVATE);
+        uid=pref.getString("uid","");
 
 
         cameraPermission = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -218,7 +222,7 @@ public class AddProduct extends AppCompatActivity implements View.OnClickListene
     private void saveOnDB() {
         try {
             final ProductsModel model = new ProductsModel();
-            final DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Products");
+            final DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Products").child(uid);
             StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("Products");
 
             final String[] path = new String[1];
@@ -260,6 +264,7 @@ public class AddProduct extends AppCompatActivity implements View.OnClickListene
                 public void onComplete(@NonNull Task<Void> task) {
                     Toast.makeText(AddProduct.this,"Product Added Successfully",Toast.LENGTH_SHORT).show();
                     Intent intent=new Intent(AddProduct.this,ManageProducts.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                 }
             });

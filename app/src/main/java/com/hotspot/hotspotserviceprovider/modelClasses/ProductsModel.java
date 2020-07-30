@@ -1,4 +1,4 @@
-package com.hotspot.hotspotserviceprovider;
+package com.hotspot.hotspotserviceprovider.modelClasses;
 
 public class ProductsModel {
     String productName,ProductImage,productDescription,productPrice,productPushkey;

@@ -7,9 +7,14 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-
     <uses-permission android:name="android.permission.CALL_PHONE" />
-
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:resizeable="true"
+        android:smallScreens="true"
+        android:xlargeScreens="true" />
     <application
         android:allowBackup="true"
         android:icon="@drawable/partnerlogo"
@@ -17,19 +22,36 @@
         android:roundIcon="@drawable/partnerlogo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".AddProduct"></activity>
-        <activity android:name=".UpdateProfile" />
-        <activity android:name=".ManageProducts" />
+        <activity android:name=".AddService"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"
+            ></activity>
+        <activity android:name=".AddShop"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"
+            />
+        <activity android:name=".AddProduct"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"
+            />
+        <activity android:name=".UpdateProfile"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"
+            />
+        <activity android:name=".ManageProducts"
+            />
         <activity
             android:name=".DashBoardActivity"
             android:label="@string/title_activity_dash_board"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".MyOrders" />
-        <activity android:name=".EmergencyContact" />
-        <activity android:name=".FeedbackRatings" />
-        <activity android:name=".ManageDoc" />
-        <activity android:name=".ManageShop" />
-        <activity android:name=".Settings" />
+        <activity android:name=".MyOrders"
+            android:label="My Orders"/>
+        <activity android:name=".EmergencyContact"
+            android:label="Emergency Contact"/>
+        <activity android:name=".FeedbackRatings"
+            android:label="Feedback Rating"/>
+        <activity android:name=".ManageDoc"
+            android:label="Manage Documents"/>
+        <activity android:name=".ManageShop"
+            android:label="Manage Shop"/>
+        <activity android:name=".Settings"
+            android:label="Settings"/>
         <activity
             android:name=".AddMoney"
             android:label="Add Money" />
@@ -70,8 +92,12 @@
         <activity
             android:name=".AllServices"
             android:label="Home" />
-        <activity android:name=".OtpActivity" />
-        <activity android:name=".PhoneNumberActivity" />
+        <activity
+            android:name=".OtpActivity"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
+        <activity
+            android:name=".PhoneNumberActivity"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
         <activity
             android:name=".MainActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
@@ -92,6 +118,7 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+        <service android:name=".DBConnnectionService" />
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"

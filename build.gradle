@@ -3,6 +3,8 @@ buildscript {
     repositories {
         google()
         jcenter()
+        maven { url 'https://jitpack.io' }
+
         flatDir {
             dirs 'libs'
         }
@@ -21,6 +23,7 @@ allprojects {
         flatDir{
             dirs 'libs'
         }
+
         google()
         jcenter()
     }
