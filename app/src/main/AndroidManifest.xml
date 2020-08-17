@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.hotspot.hotspotserviceprovider">
 
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.SEND_RESPOND_VIA_MESSAGE"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
     <supports-screens
         android:anyDensity="true"
         android:largeScreens="true"
@@ -15,6 +20,7 @@
         android:resizeable="true"
         android:smallScreens="true"
         android:xlargeScreens="true" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/partnerlogo"
@@ -22,36 +28,56 @@
         android:roundIcon="@drawable/partnerlogo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".AddService"
-            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"
-            ></activity>
-        <activity android:name=".AddShop"
-            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"
-            />
-        <activity android:name=".AddProduct"
-            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"
-            />
-        <activity android:name=".UpdateProfile"
-            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"
-            />
-        <activity android:name=".ManageProducts"
-            />
+        <activity android:name=".ReferralCode"></activity>
+        <activity
+            android:name=".PaymentStatus"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"></activity>
+        <activity
+            android:name=".AddService"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
+        <activity
+            android:name=".RequestMoneyActivity"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
+
+        <activity
+            android:name=".AddShop"
+            android:parentActivityName=".ManageShop"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
+        <activity
+            android:name=".AddProduct"
+
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
+        <activity
+            android:name=".UpdateProfile"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"/>
+
+
+        <activity android:name=".ManageProducts" />
         <activity
             android:name=".DashBoardActivity"
             android:label="@string/title_activity_dash_board"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".MyOrders"
-            android:label="My Orders"/>
-        <activity android:name=".EmergencyContact"
-            android:label="Emergency Contact"/>
-        <activity android:name=".FeedbackRatings"
-            android:label="Feedback Rating"/>
-        <activity android:name=".ManageDoc"
-            android:label="Manage Documents"/>
-        <activity android:name=".ManageShop"
-            android:label="Manage Shop"/>
-        <activity android:name=".Settings"
-            android:label="Settings"/>
+        <activity
+            android:name=".MyOrders"
+            android:label="My Orders" />
+        <activity
+            android:name=".EmergencyContact"
+            android:label="Emergency Contact"
+            android:parentActivityName=".AllServices" />
+        <activity
+            android:name=".FeedbackRatings"
+            android:label="Feedback Rating" />
+        <activity
+            android:name=".ManageDoc"
+            android:label="Manage Documents"
+            android:parentActivityName=".AllServices" />
+        <activity
+            android:name=".ManageShop"
+            android:label="Manage Shop"
+            android:parentActivityName=".AllServices" />
+        <activity
+            android:name=".Settings"
+            android:label="Settings" />
         <activity
             android:name=".AddMoney"
             android:label="Add Money" />
@@ -85,7 +111,8 @@
             android:label="Documents Update" />
         <activity
             android:name=".PartnerProfile"
-            android:label="Profile" />
+            android:label="Profile"
+            android:parentActivityName=".AllServices" />
         <activity
             android:name=".UserDetailsEdit"
             android:label="Edit Details" />
@@ -97,7 +124,15 @@
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
         <activity
             android:name=".PhoneNumberActivity"
-            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" >
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:host="example.com/link" android:scheme="http"/>
+                <data android:host="example.com/link" android:scheme="https"/>
+            </intent-filter>
+        </activity>
         <activity
             android:name=".MainActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">

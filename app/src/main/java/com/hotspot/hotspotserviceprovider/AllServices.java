@@ -4,8 +4,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -20,6 +23,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.hotspot.hotspotserviceprovider.modelClasses.ServiceUserModel;
+import com.synnapps.carouselview.CarouselView;
+import com.synnapps.carouselview.ViewListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +33,9 @@ import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 public class AllServices extends AppCompatActivity implements View.OnClickListener{
     LinearLayout nav_withdraw,nav_profile,nav_home;
+
+    CarouselView customCarouselView;
+
     Intent intent;
     FirebaseAuth mAuth;
     String uid;
@@ -41,6 +49,9 @@ public class AllServices extends AppCompatActivity implements View.OnClickListen
     LinearLayoutManager linearLayoutManager;
     LinearLayout manageShop,myOrder,Wallet,manageDoc,emergencyContact,feedbackRating,profileUpdate,logoutLayout;
     RecyclerView adsRecycler;
+
+    int[] sampleImages = {R.drawable.cb, R.drawable.medics, R.drawable.one, R.drawable.shopstop2, R.drawable.shopstopv4,R.drawable.shopstopv5};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,7 +71,7 @@ try {
     }else
         uid=mAuth.getCurrentUser().getUid();
  checkDetails();
-    reff = FirebaseDatabase.getInstance().getReference().child("Partner").child(uid);
+    reff = FirebaseDatabase.getInstance().getReference().child("Partner").child(phoneNumber);
 
     model = new ServiceUserModel();
     fetchUserDetails(uid);
@@ -68,6 +79,7 @@ try {
 
 
     //BottomNavBarCode
+    customCarouselView = (CarouselView) findViewById(R.id.customCarouselView);
     logoutLayout=findViewById(R.id.logoutLayout);
     profileUpdate=findViewById(R.id.profileUpdate);
     manageDoc=findViewById(R.id.manageDoc);
@@ -92,8 +104,11 @@ try {
     nav_profile = findViewById(R.id.nav_Profile);
     nav_withdraw = findViewById(R.id.nav_Withdraw);
 
-    runAd();
 
+
+    customCarouselView.setPageCount(sampleImages.length);
+    customCarouselView.setSlideInterval(3000);
+    customCarouselView.setViewListener(viewListener);
 
     nav_withdraw.setOnClickListener(new View.OnClickListener() {
         @Override
@@ -122,17 +137,29 @@ try {
 }
 }
 
-    private void runAd() {
+    ViewListener viewListener = new ViewListener() {
+        @Override
+        public View setViewForPosition(int position) {
 
+            View customView = getLayoutInflater().inflate(R.layout.view_custom, null);
 
-        List<String> urls = new ArrayList<>();
-        urls.add("@drawable/block");
-        urls.add("@drawable/hlogo");
+            ImageView fruitImageView = (ImageView) customView.findViewById(R.id.fruitImageView);
 
+            fruitImageView.setImageResource(sampleImages[position]);
 
+            customCarouselView.setIndicatorGravity(Gravity.CENTER_HORIZONTAL|Gravity.TOP);
 
-    }
+            return customView;
+        }
+    };
 
+    View.OnClickListener pauseOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            customCarouselView.pauseCarousel();
+            customCarouselView.reSetSlideInterval(0);
+        }
+    };
 
     private void checkDetails() {
         try {
@@ -166,6 +193,7 @@ try {
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
             if(dataSnapshot.exists()){
             model = dataSnapshot.getValue(ServiceUserModel.class);
+            edit.putString("referralCode",model.getReferralCode());
             edit.putString("userName", model.getName());
             edit.putString("WalletBalance", model.getWalletBalance());
             edit.putString("add1", model.getAdd1());
@@ -174,6 +202,10 @@ try {
             edit.putString("phn", model.getPhn());
             edit.putString("Profileimage", model.getProfileimage());
             edit.putString("Servicetype", model.getServicetype());
+            edit.putString("city",model.getCity());
+            edit.putString("state",model.getState());
+
+
 
                 Log.w(TAG,"NAME=>"+model.getName());
             edit.apply();}
@@ -226,7 +258,7 @@ try {
                 break;
             }
             case R.id.emergencyContact:{
-                Intent intent=new Intent(AllServices.this,EmergencyContact.class);
+                Intent intent=new Intent(AllServices.this,ReferralCode.class);
                 startActivity(intent);
 
                 break;
@@ -242,6 +274,7 @@ try {
                 SharedPreferences.Editor edit=pref.edit();
                 edit.clear();
                 Intent intent=new Intent(AllServices.this,PhoneNumberActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 break;
             }

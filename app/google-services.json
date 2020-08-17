@@ -8,12 +8,81 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:658803368074:android:0c679e4e6ca5cbd9754d73",
+        "android_client_info": {
+          "package_name": "com.hotspot.hotspot"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "658803368074-v75ptblshs461opnm1m7a7uogb0fu3d0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hotspot.hotspot",
+            "certificate_hash": "1283065a761233917fe4f4bd9c21ca53134a4860"
+          }
+        },
+        {
+          "client_id": "658803368074-u7mj7i2k8jju8q9p98sm1cj260na1vte.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hotspot.hotspot",
+            "certificate_hash": "35f7b20383c4e118a100872289106d195505fe6f"
+          }
+        },
+        {
+          "client_id": "658803368074-boe1b6t017a8urdmuahui9q2ulvjg5pr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSRurzhaFomR9H_zeoCnd6HAczWXqLHH8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "658803368074-boe1b6t017a8urdmuahui9q2ulvjg5pr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:658803368074:android:50288e104d81880c754d73",
         "android_client_info": {
           "package_name": "com.hotspot.hotspotserviceprovider"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "658803368074-6ecjcbr6kf6uu3i81vessudsfjp3kfkt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hotspot.hotspotserviceprovider",
+            "certificate_hash": "35f7b20383c4e118a100872289106d195505fe6f"
+          }
+        },
+        {
+          "client_id": "658803368074-l3cm8n9u2473odfooj8on9oujj7ht1l4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hotspot.hotspotserviceprovider",
+            "certificate_hash": "dc16f10734c36024fdf60d1ee018bc20d406c1e6"
+          }
+        },
+        {
+          "client_id": "658803368074-qq53vmqsj29h4hgfmb26cp7chdh0ancl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hotspot.hotspotserviceprovider",
+            "certificate_hash": "ec4704e4292572a9e91b43fa70978155effd93f8"
+          }
+        },
         {
           "client_id": "658803368074-boe1b6t017a8urdmuahui9q2ulvjg5pr.apps.googleusercontent.com",
           "client_type": 3

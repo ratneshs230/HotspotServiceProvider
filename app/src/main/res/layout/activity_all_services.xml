@@ -30,7 +30,33 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:layout_editor_absoluteX="10dp" />
 
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="4dp"
+                app:cardElevation="5dp"
 
+                app:layout_constraintTop_toBottomOf="@+id/textView4">
+
+                <com.synnapps.carouselview.CarouselView
+                    android:id="@+id/customCarouselView"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:background="#444"
+                    app:animateOnBoundary="true"
+                    app:autoPlay="true"
+                    app:fillColor="#FFFFFFFF"
+                    app:indicatorGravity="top"
+                    app:indicatorVisibility="gone"
+                    app:layout_constraintTop_toBottomOf="@+id/textView4"
+                    app:pageColor="#00000000"
+                    app:pageTransformInterval="1500"
+                    app:pageTransformer="depth"
+                    app:radius="4dp"
+                    app:slideInterval="3000"
+                    app:strokeColor="#FF777777"
+                    app:strokeWidth="1dp" />
+            </androidx.cardview.widget.CardView>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
@@ -201,13 +227,13 @@
                         <ImageView
                             android:layout_width="40dp"
                             android:layout_height="40dp"
-
+                            android:tint="@color/colorPrimaryDark"
                             android:layout_gravity="center"
-                            android:src="@drawable/ic_baseline_perm_phone_msg_24"/>
+                            android:src="@drawable/share"/>
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Contact \nUs"
+                            android:text="Share \n And Earn"
                             android:layout_gravity="center"
                             android:gravity="center"
                             />

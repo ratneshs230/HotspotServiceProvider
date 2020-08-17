@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -20,12 +21,14 @@ import com.hotspot.hotspotserviceprovider.modelClasses.ServiceUserModel;
 
 public class WalletOptions extends AppCompatActivity implements View.OnClickListener{
     TextView balance;
-    ConstraintLayout statement,send,add;
+    TextView statement,send,add;
     String uid;
     DatabaseReference ref;
     ServiceUserModel model;
    String TAG="WalletOptions";
    String phone;
+   ProgressBar progressBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +41,8 @@ public class WalletOptions extends AppCompatActivity implements View.OnClickList
             statement = findViewById(R.id.statementRequest);
             send = findViewById(R.id.sentToBank);
             add = findViewById(R.id.addMoney);
+            progressBar=findViewById(R.id.progress);
+            progressBar.setVisibility(View.VISIBLE);
             ref = FirebaseDatabase.getInstance().getReference().child("Partner").child(phone);
 
             model = new ServiceUserModel();
@@ -47,6 +52,7 @@ public class WalletOptions extends AppCompatActivity implements View.OnClickList
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     Log.w(TAG, "DataSnapshot=>" + dataSnapshot);
                     model = dataSnapshot.getValue(ServiceUserModel.class);
+                    progressBar.setVisibility(View.GONE);
                     balance.setText(model.getWalletBalance());
                 }
 

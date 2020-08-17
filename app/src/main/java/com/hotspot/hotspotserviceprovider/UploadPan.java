@@ -68,7 +68,7 @@ try {
     cameraPermission = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     storagePermission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
-    PanIV = findViewById(R.id.PanIV);
+//    PanIV = findViewById(R.id.PanIV);
     upload = findViewById(R.id.upload);
 
     PanIV.setOnClickListener(this);
@@ -81,11 +81,7 @@ try {
     @Override
     public void onClick(View view) {
     switch (view.getId()){
-        case R.id.PanIV:{
-            showImageImportDialog();
 
-            break;
-        }
         case R.id.upload:{
             storeOnDB();
             break;

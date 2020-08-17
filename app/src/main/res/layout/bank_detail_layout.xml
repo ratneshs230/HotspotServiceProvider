@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    app:cardElevation="10dp"
+    app:cardCornerRadius="10dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -24,39 +31,11 @@
             android:layout_marginTop="24dp"
             android:padding="10dp"
             android:text="@string/head_bank"
-            android:textAlignment="center"
+            android:gravity="center"
             android:textSize="20dp"
             android:textStyle="bold"
             />
-<!--        <RadioGroup-->
-<!--            android:id="@+id/radioGroup"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:checkedButton="@+id/radio_button_1"-->
-<!--            android:layout_marginTop="16dp"-->
-<!--            android:layout_marginHorizontal="24dp"-->
-<!--            android:orientation="horizontal">-->
 
-<!--            <RadioButton-->
-<!--                android:id="@+id/radio_button_1"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="match_parent"-->
-<!--                android:buttonTint="@color/colorPrimaryDark"-->
-<!--                android:textColor="@color/colorPrimaryDark"-->
-<!--                android:layout_weight="1"-->
-<!--                android:text="@string/gst_have" />-->
-
-<!--            <RadioButton-->
-<!--                android:id="@+id/radio_button_2"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="match_parent"-->
-<!--                android:buttonTint="@color/colorPrimaryDark"-->
-<!--                android:textColor="@color/colorPrimaryDark"-->
-<!--                android:layout_marginStart="20dp"-->
-<!--                android:layout_weight="1"-->
-<!--                android:text="@string/c_buss_dont" />-->
-
-<!--        </RadioGroup>-->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tvacNo"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -134,16 +113,16 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <ImageView
-            android:id="@+id/cancel_cheque"
-            android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginVertical="10dp"
-            android:src="@drawable/man" />
+<!--        <ImageView-->
+<!--            android:id="@+id/cancel_cheque"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="180dp"-->
+<!--            android:layout_marginHorizontal="20dp"-->
+<!--            android:layout_marginVertical="10dp"-->
+<!--            android:src="@drawable/man" />-->
 
         <Button
-            android:id="@+id/upload"
+            android:id="@+id/uploadBank"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -162,3 +141,4 @@
 
 
 </LinearLayout>
+</androidx.cardview.widget.CardView>

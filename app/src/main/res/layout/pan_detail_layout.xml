@@ -9,93 +9,93 @@
     tools:context=".UploadPan">
 
 
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:orientation="vertical"
-        android:elevation="10dp"
-        android:background="@drawable/main_bg"
-        >
+<!--    <LinearLayout-->
+<!--        android:id="@+id/linearLayout"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginStart="8dp"-->
+<!--        android:layout_marginTop="16dp"-->
+<!--        android:layout_marginEnd="8dp"-->
+<!--        android:orientation="vertical"-->
+<!--        android:elevation="10dp"-->
+<!--        android:background="@drawable/main_bg"-->
+<!--        >-->
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:text="@string/head_busi"
-            android:textAlignment="center"
-            android:textSize="20dp"
-            android:textStyle="bold" />
-
-        <RadioGroup
-            android:id="@+id/radioGroup"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:checkedButton="@+id/radio_button_1"
-            android:orientation="horizontal">
-
-            <RadioButton
-                android:id="@+id/radio_button_1"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:buttonTint="@color/colorPrimaryDark"
-                android:textColor="@color/colorPrimaryDark"
-                android:layout_weight="1"
-                android:text="@string/c_buss_have" />
-
-            <RadioButton
-                android:id="@+id/radio_button_2"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:buttonTint="@color/colorPrimaryDark"
-                android:textColor="@color/colorPrimaryDark"
-                android:layout_marginStart="20dp"
-                android:layout_weight="1"
-                android:text="@string/c_buss_dont" />
-
-        </RadioGroup>
-
-        <ImageView
-            android:id="@+id/PanIV"
-            android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginVertical="10dp"
-            android:src="@drawable/man" />
-<!--        <com.google.android.material.textfield.TextInputLayout-->
-<!--            android:id="@+id/tvfullname"-->
+<!--        <TextView-->
 <!--            android:layout_width="match_parent"-->
 <!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginHorizontal="20dp"-->
-<!--            android:layout_marginTop="10dp"-->
-<!--            android:hint="@string/pan_num"-->
-<!--            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">-->
+<!--            android:padding="10dp"-->
+<!--            android:text="@string/head_busi"-->
+<!--            android:textAlignment="center"-->
+<!--            android:textSize="20dp"-->
+<!--            android:textStyle="bold" />-->
 
-<!--            <com.google.android.material.textfield.TextInputEditText-->
-<!--                android:id="@+id/et_pan"-->
+<!--        <RadioGroup-->
+<!--            android:id="@+id/radioGroup"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:checkedButton="@+id/radio_button_1"-->
+<!--            android:orientation="horizontal">-->
+
+<!--            <RadioButton-->
+<!--                android:id="@+id/radio_button_1"-->
 <!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:inputType="number"-->
-<!--                />-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:buttonTint="@color/colorPrimaryDark"-->
+<!--                android:textColor="@color/colorPrimaryDark"-->
+<!--                android:layout_weight="1"-->
+<!--                android:text="@string/c_buss_have" />-->
 
-<!--        </com.google.android.material.textfield.TextInputLayout>-->
-        <Button
-            android:id="@+id/upload"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:paddingHorizontal="20dp"
-            android:textSize="16dp"
-            android:layout_marginBottom="10dp"
-            android:textColor="#fff"
-            android:background="@drawable/btn_bg"
-            android:textStyle="bold"
-            android:text="Upload"
-            />
-    </LinearLayout>
+<!--            <RadioButton-->
+<!--                android:id="@+id/radio_button_2"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:buttonTint="@color/colorPrimaryDark"-->
+<!--                android:textColor="@color/colorPrimaryDark"-->
+<!--                android:layout_marginStart="20dp"-->
+<!--                android:layout_weight="1"-->
+<!--                android:text="@string/c_buss_dont" />-->
+
+<!--        </RadioGroup>-->
+
+<!--        <ImageView-->
+<!--            android:id="@+id/PanBusiness"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="180dp"-->
+<!--            android:layout_marginHorizontal="20dp"-->
+<!--            android:layout_marginVertical="10dp"-->
+<!--            android:src="@drawable/man" />-->
+<!--&lt;!&ndash;        <com.google.android.material.textfield.TextInputLayout&ndash;&gt;-->
+<!--&lt;!&ndash;            android:id="@+id/tvfullname"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_width="match_parent"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_height="wrap_content"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_marginHorizontal="20dp"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_marginTop="10dp"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:hint="@string/pan_num"&ndash;&gt;-->
+<!--&lt;!&ndash;            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">&ndash;&gt;-->
+
+<!--&lt;!&ndash;            <com.google.android.material.textfield.TextInputEditText&ndash;&gt;-->
+<!--&lt;!&ndash;                android:id="@+id/et_pan"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:layout_width="match_parent"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:layout_height="wrap_content"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:inputType="number"&ndash;&gt;-->
+<!--&lt;!&ndash;                />&ndash;&gt;-->
+
+<!--&lt;!&ndash;        </com.google.android.material.textfield.TextInputLayout>&ndash;&gt;-->
+<!--        <Button-->
+<!--            android:id="@+id/uploadBusinessPan"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:paddingHorizontal="20dp"-->
+<!--            android:textSize="16dp"-->
+<!--            android:layout_marginBottom="10dp"-->
+<!--            android:textColor="#fff"-->
+<!--            android:background="@drawable/btn_bg"-->
+<!--            android:textStyle="bold"-->
+<!--            android:text="Upload"-->
+<!--            />-->
+<!--    </LinearLayout>-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -145,7 +145,7 @@
         </RadioGroup>
 
         <ImageView
-            android:id="@+id/PanIV1"
+            android:id="@+id/PanPersonal"
             android:layout_width="match_parent"
             android:layout_height="180dp"
             android:layout_marginHorizontal="20dp"
@@ -169,7 +169,7 @@
 
 <!--        </com.google.android.material.textfield.TextInputLayout>-->
         <Button
-            android:id="@+id/upload1"
+            android:id="@+id/uploadPersonalPan"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

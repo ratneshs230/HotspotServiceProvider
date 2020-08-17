@@ -40,6 +40,11 @@
     <string name="gst_num">Enter Your GST Number</string>
     <string name="gst_have">I have GST Num</string>
     <string name="head_bank">Add Bank Detail</string>
+    <string name="custom">Custom Duration</string>
+    <string name="one_year">Last 1 Year</string>
+    <string name="six_month">Last 6 Months</string>
+    <string name="three_month">Last 3 Months</string>
+    <string name="one_month">Last 1 Month</string>
 
 
 </resources>

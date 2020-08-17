@@ -41,7 +41,7 @@ public class OtpActivity extends AppCompatActivity {
     private TextView resend;
     private String phonenumber;
     DatabaseReference ref;
-    String TAG="Otp Activity",uid;
+    String TAG="Otp Activity",uid,referrerKey;
     FirebaseUser firebaseUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +58,9 @@ try {
     resend = findViewById(R.id.resend);
 
     phonenumber = getIntent().getStringExtra("phonenumber");
+    if(getIntent().getStringExtra("referrerKey")!=null)
+        referrerKey=getIntent().getStringExtra("referrerKey");
+
     sendVerificationCode(phonenumber);
 
     verify.setOnClickListener(new View.OnClickListener() {
@@ -117,16 +120,19 @@ try {
                                 editor.apply();
                                 Intent intent;
                                 boolean isNew = task.getResult().getAdditionalUserInfo().isNewUser();
-                                if (!isNew) {
-                                    Log.w(TAG, "Result=>" + NewUserCheck());
+                                if (!isNew ) {
                                     intent = new Intent(OtpActivity.this, AllServices.class);
 
                                 } else {
                                     intent = new Intent(OtpActivity.this, UserDetailsEdit.class);
+                                    intent.putExtra("From","otp");
 
                                 }
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 intent.putExtra("no", phonenumber);
+                                if(referrerKey!=null){
+                                    intent.putExtra("reffererKey",referrerKey);
+                                }
                                 intent.putExtra("uid", uid);
                                 startActivity(intent);
 
@@ -140,32 +146,6 @@ try {
         }catch ( Exception e){
             e.printStackTrace();
         }
-    }
- private boolean NewUserCheck() {
-        final boolean[] result = new boolean[1];
-        FirebaseDatabase.getInstance().getReference().child("Partner").child(uid).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-           if(dataSnapshot.exists()){
-               Log.w(TAG,"DATAsnapshot=>"+dataSnapshot);
-               result[0] =true;
-           }
-           else{
-               Log.w(TAG,"New DATAsnapshot=>"+dataSnapshot);
-
-                result[0] =false;
-           }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-
-
-        return result[0];
     }
 
     private void sendVerificationCode(String number) {

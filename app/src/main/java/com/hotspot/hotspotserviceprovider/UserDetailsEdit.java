@@ -12,7 +12,9 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -20,6 +22,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -36,8 +39,15 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -48,6 +58,7 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 public class UserDetailsEdit extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
@@ -65,7 +76,7 @@ public class UserDetailsEdit extends AppCompatActivity implements View.OnClickLi
     String key, TAG = "UserDetails";
     ServiceUserModel model;
     ImageView profileImg, addImg;
-    TextView drop_type, referralLayout;
+    TextView drop_type, referrerName;
     FirebaseDatabase db;
     DatabaseReference reff;
     private Spinner serviceSpinner, partnerSpinner;
@@ -79,16 +90,20 @@ public class UserDetailsEdit extends AppCompatActivity implements View.OnClickLi
     SharedPreferences pref;
     SharedPreferences.Editor edit;
     private String[] stateSpinner = new String[]{
-            "Select State", "Delhi NCR", "Uttar Pradesh", "Rajasthan"};
+            "Select State", "Delhi NCR", "Uttar Pradesh", "Rajasthan","Maharashtra"};
     private String[] delhiSpinner = new String[]{
             "Select City", "Delhi", "Greater Noida", "Gurgaon"};
     private String[] upSpinner = new String[]{
-            "Select City", "Agra", "Noida", "Lucknow"};
+            "Select City", "Kanpur","Agra", "Noida", "Lucknow","Bareilly"};
     private String[] rajasthanSpinner = new String[]{
             "Select City", "Jaipur"};
+    private String[] maharashtraSpinner=new String[]{
+      "Select City","Pune","Mumbai"
+    };
+    LinearLayout referralLayout;
     Spinner state, city;
-
-
+    String reffererKey;
+    String singinReward="0";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,7 +113,8 @@ public class UserDetailsEdit extends AppCompatActivity implements View.OnClickLi
             pref = getSharedPreferences("PartnerPref", MODE_PRIVATE);
             edit = pref.edit();
             mAuth = FirebaseAuth.getInstance();
-
+            if(i.getStringExtra("reffererKey")!=null)
+                reffererKey=i.getStringExtra("reffererKey");
 
             uid = pref.getString("uid", "");
 
@@ -106,6 +122,9 @@ public class UserDetailsEdit extends AppCompatActivity implements View.OnClickLi
 
             Log.w(TAG, "UID RECIEVED-=>" + uid);
 
+            referralLayout=findViewById(R.id.referralLayout);
+            referrerName=findViewById(R.id.referrerName);
+            progress=findViewById(R.id.progressBar);
             name = findViewById(R.id.UserFullName);
             add1 = findViewById(R.id.address1);
             add2 = findViewById(R.id.address2);
@@ -117,8 +136,111 @@ public class UserDetailsEdit extends AppCompatActivity implements View.OnClickLi
             refferalCode = findViewById(R.id.referralCode);
             state = findViewById(R.id.state);
             city = findViewById(R.id.city);
-
+            if (i.getStringExtra("From")==null){
+                referralLayout.setVisibility(View.GONE);
+            }
             phn.setText(phoneNumber);
+
+            if(reffererKey!=null){
+                refferalCode.setText(reffererKey);
+            }
+            refferalCode.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    FirebaseDatabase.getInstance().getReference().child("Partner").orderByChild("referralCode").equalTo(charSequence.toString()).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if(dataSnapshot.exists()) {
+                                referrerName.setVisibility(View.VISIBLE);
+                                refferalCode.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.ic_checked,0);
+                                String[] splitString = dataSnapshot.getValue().toString().split("name=");
+                                String newString = splitString[1].trim();
+                                String[] name=newString.split(", Profileimage");
+                                Log.w(TAG, "PHONENUBER=>" + name[0]);
+                                referrerName.setText("Referrer is "+ name[0].toUpperCase());
+                                Log.w(TAG,"NAME=>"+name[0]);
+
+                                singinReward="25";
+                            }else {
+                                singinReward="0";
+                                referrerName.setVisibility(View.GONE);
+                            }
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                Log.w(TAG,"ONTExtChanged=>"+charSequence);
+
+                FirebaseDatabase.getInstance().getReference().child("Partner").orderByChild("referralCode").equalTo(charSequence.toString()).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.exists()) {
+                            referrerName.setVisibility(View.VISIBLE);
+                            refferalCode.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.ic_checked,0);
+                            String[] splitString = dataSnapshot.getValue().toString().split("name=");
+                            String newString = splitString[1].trim();
+                            String[] name=newString.split(", Profileimage");
+                            Log.w(TAG, "PHONENUBER=>" + name[0]);
+                            referrerName.setText("Referrer is "+ name[0].toUpperCase());
+                            Log.w(TAG,"NAME=>"+name[0]);
+
+                            singinReward="25";
+                        }else {
+                            singinReward="0";
+                            referrerName.setVisibility(View.GONE);
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+
+                    FirebaseDatabase.getInstance().getReference().child("Partner").orderByChild("referralCode").equalTo(editable.toString()).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if(dataSnapshot.exists()) {
+                                referrerName.setVisibility(View.VISIBLE);
+                                refferalCode.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.ic_checked,0);
+                                String[] splitString = dataSnapshot.getValue().toString().split("name=");
+                                String newString = splitString[1].trim();
+                                String[] name=newString.split(", Profileimage");
+                                Log.w(TAG, "PHONENUBER=>" + name[0]);
+                                referrerName.setText("Referrer is "+ name[0].toUpperCase());
+                                Log.w(TAG,"NAME=>"+name[0]);
+
+                                singinReward="25";
+                            }else {
+                                singinReward="0";
+                                referrerName.setVisibility(View.GONE);
+                            }
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            });
 
             model = new ServiceUserModel();
 
@@ -131,6 +253,8 @@ public class UserDetailsEdit extends AppCompatActivity implements View.OnClickLi
 
             cameraPermission = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
             storagePermission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+            String referralCode=generateReferralCode();
+            Log.w(TAG,"ReferralCode"+referralCode);
 
             save.setOnClickListener(this);
             addImg.setOnClickListener(this);
@@ -175,7 +299,8 @@ public class UserDetailsEdit extends AppCompatActivity implements View.OnClickLi
                     Toast.makeText(UserDetailsEdit.this,"Profile Pic Select", Toast.LENGTH_SHORT).show();
                 }
                 else
-                    storeDataOnDb();
+                    progress.setVisibility(View.VISIBLE);
+                storeDataOnDb();
                 }
                 break;
             }
@@ -195,6 +320,27 @@ public class UserDetailsEdit extends AppCompatActivity implements View.OnClickLi
                         Toast.makeText(UserDetailsEdit.this, "Permission Denied", Toast.LENGTH_LONG).show();
                 }
         }
+    }
+
+    public String generateReferralCode(){
+        String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String SaltNUM="1234567890";
+        StringBuilder salt = new StringBuilder();
+        Random rnd = new Random();
+        while (salt.length() < 8) { // length of the random string.
+            int index = (int) (rnd.nextFloat() * SALTCHARS.length());
+            int index2=(int)(rnd.nextFloat()*SaltNUM.length());
+            int index3=(int)(rnd.nextFloat()*SALTCHARS.length());
+            int index4=(int)(rnd.nextFloat()*SaltNUM.length());
+
+            salt.append(SALTCHARS.charAt(index));
+            salt.append(SaltNUM.charAt(index2));
+            salt.append(SALTCHARS.charAt(index3));
+            salt.append(SaltNUM.charAt(index4));
+        }
+        String saltStr = salt.toString().toLowerCase();
+        return saltStr;
+
     }
 
     private void showImageImportDialog() {
@@ -325,13 +471,31 @@ public class UserDetailsEdit extends AppCompatActivity implements View.OnClickLi
         }
 
     }
-
+//    private void UpdateProfile(){
+//        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+//
+//        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+//                .setDisplayName(model.getName())
+//                .setPhotoUri(Uri.parse(model.getProfileimage()))
+//                .build();
+//
+//
+//        user.updateProfile(profileUpdates)
+//                .addOnCompleteListener(new OnCompleteListener<Void>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<Void> task) {
+//                        if (task.isSuccessful()) {
+//                            Log.d(TAG, "User profile updated.");
+//                        }
+//                    }
+//                });
+//    }
 
     private void storeDataOnDb() {
         try {
             reff = FirebaseDatabase.getInstance().getReference().child("Partner").child(phoneNumber);
             String pushkey = reff.push().getKey();
-
+            String referral=generateReferralCode();
             ImageRef = FirebaseStorage.getInstance().getReference().child(uid)
                     .child("UserDp");
             final String[] path = new String[1];
@@ -362,6 +526,7 @@ public class UserDetailsEdit extends AppCompatActivity implements View.OnClickLi
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         Intent intent = new Intent(UserDetailsEdit.this, AllServices.class);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                         startActivity(intent);
                                     }
                                 });
@@ -378,7 +543,6 @@ public class UserDetailsEdit extends AppCompatActivity implements View.OnClickLi
                     }
                 });
             }else Log.w(TAG,"IMageUri Empty");
-
             String Name = name.getText().toString();
 
             edit.putString("userName", Name);
@@ -394,16 +558,28 @@ public class UserDetailsEdit extends AppCompatActivity implements View.OnClickLi
             model.setAdd1(add1.getText().toString());
             model.setState(stateName);
             model.setCity(cityName);
-            model.setWalletBalance("0");
-            model.setReferralCode(refferalCode.getText().toString().trim());
+            if(singinReward.equals("0")){
+                model.setWalletBalance("0");
+                Log.w(TAG,"WalletBalanceEDit=>0");
+            }
+            else
+                model.setWalletBalance("25");
+            model.setReferralCode(referral);
+            model.setReferredBy(refferalCode.getText().toString().trim());
             model.setPushkey(pushkey);
             model.setUid(uid);
+
 
 
             reff.setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void Void) {
-
+                    Log.w(TAG,"DAta saved");
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.w(TAG,"DAta saving failed"+e.getMessage());
                 }
             });
 
@@ -439,7 +615,13 @@ public class UserDetailsEdit extends AppCompatActivity implements View.OnClickLi
 
 
                 //Rajasthan
+            }else  if(i==4){
+                cityAdapter=new ArrayAdapter(this, android.R.layout.simple_spinner_item, maharashtraSpinner);
+                cityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                stateName = "Maharashtra";
             }
+
+
             city.setAdapter(cityAdapter);
             city.setOnItemSelectedListener(this);
 
@@ -451,6 +633,14 @@ public class UserDetailsEdit extends AppCompatActivity implements View.OnClickLi
         }
     }
 
+    public void rewardUser(){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference userRecord =
+                FirebaseDatabase.getInstance().getReference()
+                        .child("Partner")
+                        .child(phoneNumber);
+        userRecord.child("referredBy").setValue(ServerValue.TIMESTAMP);
+    }
 
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {

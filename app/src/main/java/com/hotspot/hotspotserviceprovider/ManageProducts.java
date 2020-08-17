@@ -37,6 +37,7 @@ public class ManageProducts extends AppCompatActivity implements View.OnClickLis
     String uid;
 
     FirebaseRecyclerAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,13 +96,26 @@ public class ManageProducts extends AppCompatActivity implements View.OnClickLis
             protected void onBindViewHolder(@NonNull final ViewHolder holder, int position, @NonNull final ProductsModel model) {
 
                 Log.w(TAG, "model=>"+model.getProductImage());
-
+                holder.setProductDesc(model.getProductDescription());
                 holder.setProductname(model.getProductName());
                 holder.setProductPrice(model.getProductPrice());
                 holder.setProduct_img(model.getProductImage());
+                holder.deleteProducts.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        FirebaseDatabase.getInstance().getReference().child("Products").child(uid).child(model.getProductPushkey()).removeValue();
+                    }
+                });
+                holder.editProducts.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
 
+                    }
+                });
             }
+
         };
+
         productsRecycler.setAdapter(adapter);
         adapter.startListening();
 
@@ -115,8 +129,8 @@ public class ManageProducts extends AppCompatActivity implements View.OnClickLis
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView productName, productPrice;
-        ImageView product_img;
+        public TextView productName, productPrice,productDesc;
+        ImageView product_img,deleteProducts,editProducts;
 
         public ViewHolder(@NonNull View itemView) {
 
@@ -124,6 +138,10 @@ public class ManageProducts extends AppCompatActivity implements View.OnClickLis
             productName = itemView.findViewById(R.id.productName);
             productPrice = itemView.findViewById(R.id.productPrice);
             product_img=itemView.findViewById(R.id.productImage);
+            productDesc=itemView.findViewById(R.id.productDesc);
+            deleteProducts=itemView.findViewById(R.id.deleteProducts);
+            editProducts=itemView.findViewById(R.id.editProducts);
+
             Log.w(TAG, "viewHolderClass=>");
 
 
@@ -132,9 +150,14 @@ public class ManageProducts extends AppCompatActivity implements View.OnClickLis
         public void setProductname(String string) {
             productName.setText(string);
         }
+        public void setProductDesc(String string){
+            productDesc.setText(string);
+
+        }
 
         public void setProductPrice(String price) {
-            productPrice.setText("Rs "+price);
+
+            productPrice.setText(price);
         }
 
 

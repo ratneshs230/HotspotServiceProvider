@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,10 +8,20 @@
     android:theme="@style/MaterialTheme"
     tools:context=".UserDetailsEdit">
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -37,14 +47,6 @@
                  app:layout_constraintStart_toStartOf="parent"
                  app:layout_constraintTop_toTopOf="parent" />
 
-             <ProgressBar
-                 android:id="@+id/progressBar"
-                 android:layout_width="50dp"
-                 android:layout_height="50dp"
-                 android:visibility="invisible"
-                 app:layout_constraintEnd_toEndOf="@+id/profile_image"
-                 app:layout_constraintStart_toStartOf="@+id/profile_image"
-                 app:layout_constraintTop_toBottomOf="@+id/profile_image" />
 
              <ImageView
                  android:id="@+id/addImage"
@@ -137,7 +139,7 @@
                     android:id="@+id/tvfullname"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
+                    android:layout_marginLeft="5dp"
                     android:hint="Full Name"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
@@ -165,7 +167,7 @@
                     android:id="@+id/tvmail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
+                    android:layout_marginLeft="5dp"
 
                     android:hint="Mail"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
@@ -196,7 +198,7 @@
                     android:id="@+id/tvphone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
+                    android:layout_marginLeft="5dp"
                     android:hint="Mobile"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
@@ -224,7 +226,7 @@
                      android:id="@+id/tvaddress"
                      android:layout_width="match_parent"
                      android:layout_height="wrap_content"
-                     android:layout_marginStart="5dp"
+                     android:layout_marginLeft="5dp"
                      android:hint="Address"
                      style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
@@ -252,7 +254,7 @@
                     android:id="@+id/tvarea"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
+                    android:layout_marginLeft="5dp"
                     android:hint="Area / Block"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
@@ -269,18 +271,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
+                android:id="@+id/referralLayout"
                 android:orientation="horizontal">
                 <ImageView
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:padding="5dp"
+                    android:id="@+id/refImage"
                     android:layout_gravity="center"
                     android:src="@drawable/referral"/>
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tvreferral"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
+                    android:layout_marginLeft="5dp"
                     android:hint="Enter Referral Code"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
@@ -292,8 +296,15 @@
                         />
 
                 </com.google.android.material.textfield.TextInputLayout>
-            </LinearLayout>
 
+            </LinearLayout>
+             <TextView
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:id="@+id/referrerName"
+                 android:visibility="gone"
+              android:gravity="center"
+                />
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -333,4 +344,4 @@
      </LinearLayout>
 
     </ScrollView>
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

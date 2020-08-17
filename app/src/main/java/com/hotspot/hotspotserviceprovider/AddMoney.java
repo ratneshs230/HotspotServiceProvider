@@ -34,11 +34,14 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 public class AddMoney extends AppCompatActivity {
     TextView balance;
     EditText amount;
-    Button upi_payment, cash_paymentBtn;
+    Button cardPayment;
     ServiceUserModel model;
     private static final int PWE_REQUEST_CODE = 100;
     String uid, name, add1, add2, mail, phn, editAmt;
@@ -54,6 +57,8 @@ public class AddMoney extends AppCompatActivity {
     String rs;
     TransactionModel transactionModel;
     String timeFormat[],time,phone;
+
+    String city,state;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,12 +68,20 @@ public class AddMoney extends AppCompatActivity {
         SharedPreferences userPref = getSharedPreferences("PartnerPref", MODE_PRIVATE);
         uid = userPref.getString("uid", "");
 
+        amount = findViewById(R.id.amount);
+        balance = findViewById(R.id.balance);
+        cardPayment = findViewById(R.id.cardPayment);
+        amt = amount.getText().toString().trim();
+
+
         name = userPref.getString("userName", "");
         add1 = userPref.getString("add1", "");
         add2 = userPref.getString("add2", "");
         mail = userPref.getString("mail", "");
         phn = userPref.getString("Phone", "");
-        Log.w(TAG, "NAME=>" + name);
+        city=userPref.getString("city","");
+        state=userPref.getString("state","");
+        Log.w(TAG, "NAME=>" + name+"UID=>"+uid);
         rs = getString(R.string.Rs);
         transactionModel=new TransactionModel();
         ref = FirebaseDatabase.getInstance().getReference().child("Partner").child(phn);
@@ -77,10 +90,9 @@ public class AddMoney extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 model = dataSnapshot.getValue(ServiceUserModel.class);
-                if (model.getWalletBalance() == null) {
-                    userBalance = "0";
-                } else
-                    userBalance = model.getWalletBalance();
+
+
+                userBalance = model.getWalletBalance();
                 Log.w(TAG, "UserBalance=>" + userBalance);
                 balance.setText("Available Balance :" + rs + " " + userBalance);
 
@@ -94,31 +106,10 @@ public class AddMoney extends AppCompatActivity {
 
         Log.w(TAG, "Name=>" + name);
 
-        Upi = findViewById(R.id.upi);
-        upiLayout = findViewById(R.id.upilayout);
-        amount = findViewById(R.id.amount);
-        balance = findViewById(R.id.balance);
-        upi_payment = findViewById(R.id.upi_payment);
-        amt = amount.getText().toString().trim();
 
-        //handling visibility
-        //Card
 
-        //Upi
-        Upi.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                if (upiLayout.getVisibility() == View.GONE) {
-                    upiLayout.setVisibility(View.VISIBLE);
-                } else
-                    upiLayout.setVisibility(View.GONE);
-            }
-
-        });
-
-        //upiPayment
-        upi_payment.setOnClickListener(new View.OnClickListener() {
+        //EaseBuzz
+        cardPayment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (amount.getText().toString().trim().isEmpty()) {
@@ -136,10 +127,15 @@ public class AddMoney extends AppCompatActivity {
     }
 
     private void payUsingEaseBuzz() {
-        String key = "2PBP7IABZ2";
-        String salt = "DAH88E3UWQ";
-
-
+//        String key = "2PBP7IABZ2";
+//        String salt = "DAH88E3UWQ";
+//prod key=>
+        String key="CSVC8AHW8D";
+        String salt="IHSTFNAU4O";
+        String txnID=getSaltString();
+        Log.w(TAG,"TxnID=>"+txnID);
+        ref= FirebaseDatabase.getInstance().getReference();
+        String pushkey=ref.push().getKey();
         String text = amount.getText().toString();
         if (!text.isEmpty())
             try {
@@ -148,10 +144,11 @@ public class AddMoney extends AppCompatActivity {
             } catch (Exception e1) {
                 e1.printStackTrace();
             }
-        String hashString = key + "|" + uid + "|" + value + "|" + "testInfo" + "|" + name + "|" + "ratneshs230@gmail.com" + "|" + "UserDefinedField1" + "|" + "UserDefinedField2" + "|" + "UserDefinedField3" + "|" +
-                "UserDefinedField4" + "|" + "UserDefinedField5" + "||||||" + salt + "|" + key;
+        String hashString = key + "|" + txnID  + "|" + value + "|" + "testInfo" + "|" + name + "|"
+                + "contacthotspoot@gmail.com" + "|" + "" + "|" + "" + "|" + "" + "|"
+                +
+                "" + "|" + "" + "||||||" + salt + "|" + key;
 
-        //String hashString = key  + uid + value + "testInfo"  + name + "ratneshs230@gmail.com" + "" + "" +""+""+""+""+""+""+  salt  + key;
         String encrypted = encryptThisString(hashString);
         Log.w("AddMoney", "hashString=>" + hashString);
 
@@ -159,32 +156,44 @@ public class AddMoney extends AppCompatActivity {
 
         Intent intentProceed = new Intent(AddMoney.this, PWECouponsActivity.class);
         intentProceed.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-        intentProceed.putExtra("txnid", uid);
+        intentProceed.putExtra("txnid", txnID);
         intentProceed.putExtra("amount", value);
         intentProceed.putExtra("productinfo", "testInfo");
         intentProceed.putExtra("firstname", name);
-        intentProceed.putExtra("email", "ratneshs230@gmail.com");
+        intentProceed.putExtra("email", "contacthotspoot@gmail.com");
         intentProceed.putExtra("phone", phn);
-        intentProceed.putExtra("key", "2PBP7IABZ2");
-        intentProceed.putExtra("udf1", "UserDefinedField1");
-        intentProceed.putExtra("udf2", "UserDefinedField2");
-        intentProceed.putExtra("udf3", "UserDefinedField3");
-        intentProceed.putExtra("udf4", "UserDefinedField4");
-        intentProceed.putExtra("udf5", "UserDefinedField5");
-        intentProceed.putExtra("udf6", "UserDefinedField6");
-        intentProceed.putExtra("udf7", "UserDefinedField7");
-        intentProceed.putExtra("udf8", "UserDefinedField8");
+        intentProceed.putExtra("key", key);
+        intentProceed.putExtra("udf1", "");
+        intentProceed.putExtra("udf2", "");
+        intentProceed.putExtra("udf3", "");
+        intentProceed.putExtra("udf4", "");
+        intentProceed.putExtra("udf5", "");
+        intentProceed.putExtra("udf6", "");
+        intentProceed.putExtra("udf7", "");
+        intentProceed.putExtra("udf8", "");
         intentProceed.putExtra("address1", add1);
         intentProceed.putExtra("address2", add2);
-        intentProceed.putExtra("city", "Lucknow");
-        intentProceed.putExtra("state", "UttarPradesh");
+        intentProceed.putExtra("city", city);
+        intentProceed.putExtra("state", state);
         intentProceed.putExtra("country", "India");
         intentProceed.putExtra("zipcode", "226025");
         intentProceed.putExtra("hash", encrypted);
-        intentProceed.putExtra("unique_id", uid);
-        intentProceed.putExtra("pay_mode", "test");
+        intentProceed.putExtra("unique_id", "");
+        intentProceed.putExtra("pay_mode", "production");
         startActivityForResult(intentProceed, PWEStaticDataModel.PWE_REQUEST_CODE);
 
+
+    }
+    protected String getSaltString() {
+        String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+        StringBuilder salt = new StringBuilder();
+        Random rnd = new Random();
+        while (salt.length() < 12) { // length of the random string.
+            int index = (int) (rnd.nextFloat() * SALTCHARS.length());
+            salt.append(SALTCHARS.charAt(index));
+        }
+        String saltStr = salt.toString();
+        return saltStr;
 
     }
 
@@ -210,34 +219,34 @@ public class AddMoney extends AppCompatActivity {
         }
     }
 
-    void payUsingUpi(String name, String upiId, String note, String amount) {
-        Log.e("main ", "name " + name + "--up--" + upiId + "--" + note + "--" + amount);
-        Uri uri = Uri.parse("upi://pay").buildUpon()
-                .appendQueryParameter("pa", upiId)
-                .appendQueryParameter("pn", name)
-                //.appendQueryParameter("mc", "")
-                //.appendQueryParameter("tid", "02125412")
-                .appendQueryParameter("tr", "83183655")
-                .appendQueryParameter("tn", note)
-                .appendQueryParameter("am", 1 + "")
-                .appendQueryParameter("cu", "INR")
-                //.appendQueryParameter("refUrl", "blueapp")
-                .build();
-
-        Intent upiPayIntent = new Intent(Intent.ACTION_VIEW);
-        upiPayIntent.setData(uri);
-
-        // will always show a dialog to user to choose an app
-        Intent chooser = Intent.createChooser(upiPayIntent, "Pay with");
-
-        // check if intent resolves
-        if (null != chooser.resolveActivity(getPackageManager())) {
-            startActivityForResult(chooser, UPI_PAYMENT);
-        } else {
-            Toast.makeText(AddMoney.this, "No UPI app found, please install one to continue", Toast.LENGTH_SHORT).show();
-        }
-
-    }
+//    void payUsingUpi(String name, String upiId, String note, String amount) {
+//        Log.e("main ", "name " + name + "--up--" + upiId + "--" + note + "--" + amount);
+//        Uri uri = Uri.parse("upi://pay").buildUpon()
+//                .appendQueryParameter("pa", upiId)
+//                .appendQueryParameter("pn", name)
+//                //.appendQueryParameter("mc", "")
+//                //.appendQueryParameter("tid", "02125412")
+//                .appendQueryParameter("tr", "83183655")
+//                .appendQueryParameter("tn", note)
+//                .appendQueryParameter("am", 1 + "")
+//                .appendQueryParameter("cu", "INR")
+//                //.appendQueryParameter("refUrl", "blueapp")
+//                .build();
+//
+//        Intent upiPayIntent = new Intent(Intent.ACTION_VIEW);
+//        upiPayIntent.setData(uri);
+//
+//        // will always show a dialog to user to choose an app
+//        Intent chooser = Intent.createChooser(upiPayIntent, "Pay with");
+//
+//        // check if intent resolves
+//        if (null != chooser.resolveActivity(getPackageManager())) {
+//            startActivityForResult(chooser, UPI_PAYMENT);
+//        } else {
+//            Toast.makeText(AddMoney.this, "No UPI app found, please install one to continue", Toast.LENGTH_SHORT).show();
+//        }
+//
+//    }
 
     /*
         @Override
@@ -342,6 +351,8 @@ public class AddMoney extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Log.e("main ", "response " + resultCode);
+        Intent intent=new Intent(AddMoney.this,PaymentStatus.class);
+        String pushkey= FirebaseDatabase.getInstance().getReference().child("Transactions").child(phn).push().getKey();
 
         if (data != null) {
 
@@ -360,6 +371,7 @@ public class AddMoney extends AppCompatActivity {
 
                     String result = data.getStringExtra("result");
                     String payment_response = data.getStringExtra("payment_response");
+
                     if (result.contains(PWEStaticDataModel.TXN_SUCCESS_CODE)) {
                         Toast.makeText(AddMoney.this, "Payment Successful", Toast.LENGTH_SHORT).show();
 
@@ -368,53 +380,88 @@ public class AddMoney extends AppCompatActivity {
 
                         Log.w(TAG,"Time=>"+time);
                         transactionModel.setTransactionTime(time);
+                        Map<String,Object> newBal=new HashMap<>();
+                        String newAmt=String.valueOf(Integer.valueOf(userBalance)+Integer.valueOf(amount.getText().toString()));
+                        newBal.put("walletBalance",newAmt);
+                        FirebaseDatabase.getInstance().getReference().child("Partner").child(phn).updateChildren(newBal);
+                        intent.putExtra("amt",amt);
+                        intent.putExtra("status",true);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
+                        startActivity(intent);
                         //PWWtaticDataModel.TXN_SUCCESS_CODE is a string constant and its value is “payment_successfull”
                         //Code here will execute if the payment transaction completed successfully.
                         // here merchant can show the payment success message.
                     } else if (result.contains(PWEStaticDataModel.TXN_TIMEOUT_CODE)) {
                         Toast.makeText(AddMoney.this, "Transaction Timed out", Toast.LENGTH_SHORT).show();
                         transactionModel.setTransactionStatus("Failed");
+                        intent.putExtra("amt",amt);
+                        intent.putExtra("status",false);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
+                        startActivity(intent);
                         //PWEStaticDataModel.TXN_TIMEOUT_CODE is a string constant and its value is “txn_session_timeout”
                         //Code here will execute if the payment transaction failed because of the transaction time out.
                         // here merchant can show the payment failed message.
                     } else if (result.contains(PWEStaticDataModel.TXN_BACKPRESSED_CODE)) {
                         Toast.makeText(AddMoney.this, "Back Button Pressed", Toast.LENGTH_SHORT).show();
                         transactionModel.setTransactionStatus("Failed");
+                        intent.putExtra("amt",amt);
+                        intent.putExtra("status",false);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
+                        startActivity(intent);
                         //PWEStaticDataModel.TXN_BACKPRESSED_CODE is a string constant and its value is “back_pressed”
                         //Code here will execute if the user pressed the back button on coupons Activity.
                         // here merchant can show the payment failed message.
                     } else if (result.contains(PWEStaticDataModel.TXN_USERCANCELLED_CODE)) {
                         Toast.makeText(AddMoney.this, "Transaction Cancelled By User", Toast.LENGTH_SHORT).show();
                         transactionModel.setTransactionStatus("Failed");
+                        intent.putExtra("amt",amt);
+                        intent.putExtra("status",false);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
+                        startActivity(intent);
                         //PWEStaticDataModel.TXN_USERCANCELLED_CODE is a string constant and its value is “user_cancelled”
                         //Code here will execute if the the user pressed the cancel button during the payment process.
                         // here merchant can show the payment failed message.
                     } else if (result.contains(PWEStaticDataModel.TXN_ERROR_SERVER_ERROR_CODE)) {
                         Toast.makeText(AddMoney.this, "Server Error", Toast.LENGTH_SHORT).show();
                         transactionModel.setTransactionStatus("Failed");
+                        intent.putExtra("amt",amt);
+                        intent.putExtra("status",false);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
+                        startActivity(intent);
 
                     } else if (result.contains(PWEStaticDataModel.TXN_ERROR_TXN_NOT_ALLOWED_CODE)) {
                         Toast.makeText(AddMoney.this, "Transaction Not Allowed", Toast.LENGTH_SHORT).show();
                         transactionModel.setTransactionStatus("Failed");
+                        intent.putExtra("amt",amt);
+                        intent.putExtra("status",false);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
+                        startActivity(intent);
                     } else if (result.contains(PWEStaticDataModel.TXN_BANK_BACK_PRESSED_CODE)) {
                         Toast.makeText(AddMoney.this, "BANK_BACK_PRESSED", Toast.LENGTH_SHORT).show();
                         transactionModel.setTransactionStatus("Failed");
+                        intent.putExtra("amt",amt);
+                        intent.putExtra("status",false);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
+                        startActivity(intent);
                     } else {
                         Toast.makeText(AddMoney.this, "Payment Failed", Toast.LENGTH_SHORT).show();
                         transactionModel.setTransactionStatus("Failed");
-
+                        intent.putExtra("amt",amt);
+                        intent.putExtra("status",false);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
                         // Here the value of result is “payment_failed” or “error_noretry” or “retry_fail_error”
                         //Code here will execute if payment is failed some other reasons.
                         // here merchant can show the payment failed message.
                     }
-                    transactionsref.setValue(transactionModel);
+                    transactionsref.child(pushkey).setValue(transactionModel);
 
                 } catch (Exception e) {
                     //Handle exceptions here

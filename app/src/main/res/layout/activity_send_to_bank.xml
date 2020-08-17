@@ -6,4 +6,39 @@
     android:layout_height="match_parent"
     tools:context=".SendToBank">
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/bankRecycler"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout7"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:layout_editor_absoluteX="5dp">
+
+        <include
+            android:id="@+id/bankdetailLayout"
+            layout="@layout/bank_detail_layout"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/bankAdd"
+            style="@style/textview"
+            android:layout_width="match_parent"
+
+            android:layout_height="wrap_content"
+            android:background="@drawable/select_bg"
+            android:padding="10dp"
+            android:text="Add Account"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

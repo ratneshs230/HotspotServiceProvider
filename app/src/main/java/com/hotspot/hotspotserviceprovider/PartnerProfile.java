@@ -8,32 +8,43 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.dynamiclinks.DynamicLink;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
+import com.google.firebase.dynamiclinks.ShortDynamicLink;
 import com.hotspot.hotspotserviceprovider.modelClasses.ServiceUserModel;
 import com.squareup.picasso.Picasso;
 
+import java.util.Random;
+
 public class PartnerProfile extends AppCompatActivity implements View.OnClickListener{
     ImageView profileImg,editProfile;
-    TextView documentUpload,aboutme,username;
+    TextView documentUpload,aboutme,username,share;
     String uid;
     DatabaseReference ref;
     ServiceUserModel model;
     String TAG="Profile";
     String phone;
-    TextView Signout;
+    TextView Signout,tv_mail,tv_phone;
+
 ProgressBar progress;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +59,9 @@ try {
 
     }
     Log.w(TAG,"PartnerProfile=>"+uid);
+
+    tv_mail=findViewById(R.id.tv_email);
+    tv_phone=findViewById(R.id.tv_mobile);
     Signout = findViewById(R.id.signOut);
     progress = findViewById(R.id.progress);
     profileImg = findViewById(R.id.ProfilePicture);
@@ -61,7 +75,6 @@ try {
     documentUpload.setOnClickListener(this);
     aboutme.setOnClickListener(this);
     Signout.setOnClickListener(this);
-
     model = new ServiceUserModel();
 
     ref = FirebaseDatabase.getInstance().getReference().child("Partner").child(phone);
@@ -76,6 +89,8 @@ try {
 
                 Picasso.get().load(model.getProfileimage()).into(profileImg);
                 username.setText(model.getName());
+                tv_mail.setText(model.getMail());
+                tv_phone.setText(model.getPhn());
             }
         }
 
@@ -91,6 +106,7 @@ try {
     }
 
 
+
     @Override
     public void onClick(View view) {
         switch(view.getId()){
@@ -100,6 +116,7 @@ try {
                 startActivity(intent);
                 break;
             }
+
             case R.id.docUpload:{
                 Intent intent=new Intent(PartnerProfile.this,DocumentsUpdate.class);
                 startActivity(intent);
@@ -107,9 +124,9 @@ try {
                 break;
             }
             case R.id.about:{
-
                 break;
             }
+
             case R.id.signOut:{
                 FirebaseAuth.getInstance().signOut();
                 SharedPreferences pref=getSharedPreferences("PartnerPref",MODE_PRIVATE);
@@ -121,4 +138,5 @@ try {
         }
 
     }
-}
+
+    }

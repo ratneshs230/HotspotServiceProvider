@@ -20,25 +20,37 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.hotspot.hotspotserviceprovider.modelClasses.ProductsModel;
+import com.hotspot.hotspotserviceprovider.modelClasses.ShopDetailModel;
 import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -51,24 +63,116 @@ public class ManageShop extends AppCompatActivity implements View.OnClickListene
     FloatingActionButton addShop;
     RecyclerView shopRecycler;
     LinearLayoutManager linearLayoutManager;
+    String phone;
+    String TAG="ManageShop";
+    ProgressBar imageProgress;
+    FirebaseRecyclerAdapter adapter;
+    LinearLayoutManager layoutManager;
+    ShopDetailModel shopDetailModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_shop);
+        try {
+            SharedPreferences pref = getSharedPreferences("PartnerPref", MODE_PRIVATE);
 
 
-        shopRecycler=findViewById(R.id.shopRecycler);
-        addShop=findViewById(R.id.floatingActionButton);
+            phone = pref.getString("Phone", "");
+            shopRecycler = findViewById(R.id.shopRecycler);
+            addShop = findViewById(R.id.floatingActionButton);
+            shopDetailModel = new ShopDetailModel();
+            fetch();
+            addShop.setOnClickListener(this);
+            layoutManager = new LinearLayoutManager(this);
+            shopRecycler.setLayoutManager(layoutManager);
 
-        fetch();
-        addShop.setOnClickListener(this);
-
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     private void fetch() {
+        try {
+            Query query = FirebaseDatabase.getInstance().getReference().child("Partner").child(phone).child("ShopDetails");
+            FirebaseRecyclerOptions<ShopDetailModel> options = new FirebaseRecyclerOptions.Builder<ShopDetailModel>()
+                    .setQuery(query, ShopDetailModel.class)
+                    .build();
 
+            adapter = new FirebaseRecyclerAdapter<ShopDetailModel, ViewHolder>(options) {
+                @Override
+                protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull ShopDetailModel model) {
+
+                    holder.setVerification(model.getVerificationStatus());
+                    holder.setmShopName(model.getShopName());
+                    holder.setmOwnerName(model.getOwnerName());
+                    holder.setmCategory(model.getShopCategory());
+                    holder.setmImageViewShop(model.getShopImage());
+
+                }
+
+                @NonNull
+                @Override
+                public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                    View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.shop_cardview, parent, false);
+                    return new ViewHolder(view);
+                }
+            };
+            shopRecycler.setAdapter(adapter);
+            adapter.startListening();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
+
+        public class ViewHolder extends RecyclerView.ViewHolder {
+
+            TextView mShopName,mOwnerName,mCategory,mAddress,verification;
+            ImageView mImageViewShop;
+
+            public ViewHolder(@NonNull View itemView) {
+
+                super(itemView);
+                mShopName=itemView.findViewById(R.id.tv_shop_name);
+                mOwnerName=itemView.findViewById(R.id.tv_owner_name);
+                mCategory=itemView.findViewById(R.id.tv_category);
+//                mAddress=itemView.findViewById(R.id.tv_address);
+                mImageViewShop=itemView.findViewById(R.id.iv_shop);
+                verification=itemView.findViewById(R.id.verification);
+                Log.w(TAG, "viewHolderClass=>");
+
+
+            }
+            public void setVerification(Boolean status){
+
+                if(status){
+                    verification.setText("Verified");
+                    verification.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.ic_checked,0);
+                }else {
+                    verification.setText("Pending Verification");
+                    verification.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.outline_report_black_18dp,0);
+                }
+            }
+            public void setmShopName(String string) {
+                mShopName.setText(string);
+            }
+            public void setmOwnerName(String string){
+                mOwnerName.setText(string);
+            }
+            public void setmCategory(String string) { mCategory.setText(string);
+            }
+//            public void setmAddress(String string){
+//                mAddress.setText(string);
+//            }
+            public void setmImageViewShop(String img){
+                Picasso.get().load(img).into(mImageViewShop);
+            }
+
+        }
+
+
+
 
     @Override
     public void onClick(View view) {

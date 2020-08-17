@@ -1,7 +1,16 @@
 package com.hotspot.hotspotserviceprovider.modelClasses;
 
 public class ShopDetailModel {
-    String image,ownerName,shopName,ownerContact,shopCategory,ownerMail,shopAddress,state,city,pushkey;
+    String ShopImage,ownerName,shopName,ownerContact,shopCategory,ownerMail,shopAddress,state,city,pushkey;
+    Boolean verificationStatus;
+
+    public Boolean getVerificationStatus() {
+        return verificationStatus;
+    }
+
+    public void setVerificationStatus(Boolean verificationStatus) {
+        this.verificationStatus = verificationStatus;
+    }
 
     public String getPushkey() {
         return pushkey;
@@ -11,12 +20,12 @@ public class ShopDetailModel {
         this.pushkey = pushkey;
     }
 
-    public String getImage() {
-        return image;
+    public String getShopImage() {
+        return ShopImage;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setShopImage(String shopImage) {
+        ShopImage = shopImage;
     }
 
     public String getOwnerName() {

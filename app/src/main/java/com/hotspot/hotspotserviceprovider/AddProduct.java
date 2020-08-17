@@ -18,8 +18,11 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -27,8 +30,11 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -37,10 +43,14 @@ import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-public class AddProduct extends AppCompatActivity implements View.OnClickListener{
+public class AddProduct extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
     TextInputEditText name,description,price;
     ImageView pic;
     Button addBtn;
@@ -56,29 +66,91 @@ public class AddProduct extends AppCompatActivity implements View.OnClickListene
     private String[] storagePermission;
     SharedPreferences pref;
     String TAG="AddProductFragment";
+    String[]  shopCategory;
+    Map<String,Object> shopDetails;
+    Spinner shopSelect;
+    String shopName,key,category;
     private String phone;
     private String mParam2;
+    List<String> shops = new ArrayList<String>();
+    List<String> shopkey=new ArrayList<String>();
+    List<String> Category=new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_product);
+
+
+        SharedPreferences pref = getSharedPreferences("PartnerPref", MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+
+        phone=pref.getString("Phone","");
+        if(phone==null){
+            Intent intent=new Intent(AddProduct.this,AllServices.class);
+            startActivity(intent);
+        }
+        pref=getSharedPreferences("PartnerPref", MODE_PRIVATE);
+        uid=pref.getString("uid","");
+
+        shopDetails=new HashMap<>();
+
+        shopSelect=findViewById(R.id.shopSelect);
         pic=findViewById(R.id.productImage);
         name=findViewById(R.id.productName);
         description=findViewById(R.id.productDesc);
         price=findViewById(R.id.productPrice);
-        pref=getSharedPreferences("PartnerPref", MODE_PRIVATE);
-        uid=pref.getString("uid","");
 
 
+        getShops();
         cameraPermission = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
         storagePermission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
+
+
+        shopSelect.setOnItemSelectedListener(this);
 
         pic.setOnClickListener(this);
         addBtn=findViewById(R.id.add_btn);
 
         reference= FirebaseDatabase.getInstance().getReference().child("Shops").child("Products");
         addBtn.setOnClickListener(this);
+    }
+    public void getShops(){
+        FirebaseDatabase.getInstance().getReference().child("Partner").child(phone).child("ShopDetails").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()) {
+
+                     shops = new ArrayList<String>();
+                     shopkey=new ArrayList<>();
+                    Log.w(TAG,"DatasnapShot=>"+dataSnapshot);
+
+                    for (DataSnapshot model : dataSnapshot.getChildren()) {
+                        String key=model.child("pushkey").getValue(String.class);
+                        String shopName = model.child("shopName").getValue(String.class);
+                        String cat=model.child("shopCategory").getValue(String.class);
+                        shopkey.add(key);
+                        shops.add(shopName);
+                        Category.add(cat);
+                    }
+//                    Set<String> set = new HashSet<>(shops);
+//                    shops.clear();
+//                    shops.addAll(set);
+//                    Log.w(TAG, "models=>" + shops);
+
+                    ArrayAdapter<String> adapter =new ArrayAdapter<>(AddProduct.this,android.R.layout.simple_spinner_item,shops);
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    shopSelect.setAdapter(adapter);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -222,7 +294,7 @@ public class AddProduct extends AppCompatActivity implements View.OnClickListene
     private void saveOnDB() {
         try {
             final ProductsModel model = new ProductsModel();
-            final DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Products").child(uid);
+            final DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Products");
             StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("Products");
 
             final String[] path = new String[1];
@@ -258,6 +330,9 @@ public class AddProduct extends AppCompatActivity implements View.OnClickListene
             model.setProductDescription(description.getText().toString().trim());
             model.setProductPrice(price.getText().toString().trim());
             model.setProductPushkey(pushkey);
+            model.setProductCategory(category);
+            model.setSellerUid(uid);
+//            model.setShopKey();
 
             reference.child(pushkey).setValue(model).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
@@ -267,7 +342,7 @@ public class AddProduct extends AppCompatActivity implements View.OnClickListene
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                 }
-            });
+             });
 
 
         }catch (Exception e){
@@ -276,5 +351,17 @@ public class AddProduct extends AppCompatActivity implements View.OnClickListene
     }
 
 
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        shopName=adapterView.getItemAtPosition(i).toString();
+        key=shopkey.get(i);
+        category=Category.get(i);
+        Log.w(TAG,"SHopname=>"+shopName+"Key=>"+key);
+    }
 
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
+
+    }
 }

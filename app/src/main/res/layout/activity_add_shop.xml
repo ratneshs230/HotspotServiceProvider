@@ -112,25 +112,38 @@
                         android:padding="5dp"
                         android:src="@drawable/referral" />
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/tvshopcategory"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
 
-                        android:layout_marginStart="5dp"
-                        android:hint="Shop Category">
-
-                        <com.google.android.material.textfield.TextInputEditText
+                        <Spinner
                             android:id="@+id/shopCategory"
+                            android:background="@drawable/round_button"
+                            android:padding="10dp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:inputType="textEmailAddress" />
+                             />
 
-                    </com.google.android.material.textfield.TextInputLayout>
 
                 </LinearLayout>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/fssaiLayout"
+    android:visibility="gone"
+    android:orientation="horizontal">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/fssaiText"
+        android:text="Upload your FSSAI License here"
+        android:layout_weight="1"/>
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_weight="1"
+        android:id="@+id/fssaiImage"
+        android:src="@drawable/ic_baseline_add_a_photo_24"/>
 
+
+</LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

@@ -15,6 +15,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -37,6 +38,8 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 public class UploadAAdhar extends AppCompatActivity implements View.OnClickListener {
     ImageView aadharFrontIV, adharbackView;
@@ -157,6 +160,8 @@ try {
 
             }
         });
+
+
     }catch(Exception e){
         e.printStackTrace();
     }

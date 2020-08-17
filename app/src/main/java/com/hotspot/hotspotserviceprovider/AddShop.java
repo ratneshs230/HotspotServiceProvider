@@ -19,10 +19,13 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -43,7 +46,7 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AddShop extends AppCompatActivity implements View.OnClickListener{
+public class AddShop extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener{
 
     private static final int CAMERA_REQUEST_CODE = 100;
     private static final int STORAGE_REQUEST_CODE = 200;
@@ -52,29 +55,27 @@ public class AddShop extends AppCompatActivity implements View.OnClickListener{
     private String[] cameraPermission;
     private String[] storagePermission;
 
+    ProgressBar progressBar;
     ShopDetailModel model;
-    Uri imageUri;
+    Uri imageUri,fssaiUri;
     ArrayAdapter<String> cityAdapter;
     Spinner citySpinner;
     String TAG="ManageShop";
     String cityName, stateName;
     ImageView imageView;
     ImageButton addImage;
-    TextInputEditText shopName,shopCategory,shopOwnerName,ownerContact,ownerEmail,shopAddress,address2,PinCode;
-    Spinner state,city;
+    TextInputEditText shopName,shopOwnerName,ownerContact,ownerEmail,shopAddress,address2,PinCode;
+    Spinner spinnerCategory,city;
 
     Button submit;
     DatabaseReference reference;
-    String phone;
-    int cityChoice, stateChoice = 0;
-    private String[] stateSpinner = new String[]{
-            "Select State", "Delhi NCR", "Uttar Pradesh", "Rajasthan"};
-    private String[] delhiSpinner = new String[]{
-            "Select City", "Delhi", "Greater Noida", "Gurgaon"};
-    private String[] upSpinner = new String[]{
-            "Select City", "Agra", "Noida", "Lucknow"};
-    private String[] rajasthanSpinner = new String[]{
-            "Select City", "Jaipur"};
+    String phone,category;
+LinearLayout fssaiLayout;
+ImageView fssaiImage;
+String clicked;
+    private String[] categoryList = new String[]{
+            "Select Category", "Eats", "Medics","Stay","Games","Shop Stop","Liquor Land","Call for Any","Vocal to Local","Fashion and Accessories"};
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,20 +85,22 @@ public class AddShop extends AppCompatActivity implements View.OnClickListener{
             cameraPermission = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
             storagePermission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
-            SharedPreferences pref = getSharedPreferences("PartnerPref", MODE_PRIVATE);
-            SharedPreferences.Editor editor = pref.edit();
+                SharedPreferences pref = getSharedPreferences("PartnerPref", MODE_PRIVATE);
+                SharedPreferences.Editor editor = pref.edit();
 
-            phone=pref.getString("Phone","");
-            if(phone.equals("")){
-                phone="UnKnown";
-            }
+                phone=pref.getString("Phone","");
+                if(phone.equals("")){
+                    phone="UnKnown";
+                }
             model=new ShopDetailModel();
-
+            fssaiLayout=findViewById(R.id.fssaiLayout);
+            fssaiImage=findViewById(R.id.fssaiImage);
+            progressBar=findViewById(R.id.progressBar);
             imageView = findViewById(R.id.imageView);
             addImage = findViewById(R.id.addImage);
             shopAddress = findViewById(R.id.address1);
             shopName = findViewById(R.id.shopName);
-            shopCategory = findViewById(R.id.shopCategory);
+            spinnerCategory = findViewById(R.id.shopCategory);
             shopOwnerName = findViewById(R.id.shopOwnerName);
             ownerContact = findViewById(R.id.ownerContact);
             ownerEmail = findViewById(R.id.ownerEmail);
@@ -109,9 +112,16 @@ public class AddShop extends AppCompatActivity implements View.OnClickListener{
             submit.setOnClickListener(this);
 
             ArrayAdapter<String> adapter = new ArrayAdapter(this,
-                    android.R.layout.simple_spinner_item, stateSpinner);
+                    android.R.layout.simple_spinner_item,categoryList );
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinnerCategory.setAdapter(adapter);
+            spinnerCategory.setOnItemSelectedListener(this);
 
+            fssaiImage.setOnClickListener(this);
+            if(category.equals("Eats")){
+                fssaiLayout.setVisibility(View.VISIBLE);
+            }else
+                fssaiLayout.setVisibility(View.GONE);
 
 
         }catch (Exception e){
@@ -147,11 +157,18 @@ public class AddShop extends AppCompatActivity implements View.OnClickListener{
             if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
                 CropImage.ActivityResult result = CropImage.getActivityResult(data);
                 if (resultCode == RESULT_OK) {
-                    imageUri = result.getUri();
-                    imageView.setImageURI(imageUri);
-                    Picasso.get().load(imageUri).into(imageView);
-                    Log.w(TAG, "ResultUri=>" + imageUri);
+                    if(clicked.equals("fssai")){
+                        fssaiUri=result.getUri();
+                        Picasso.get().load(fssaiUri).into(fssaiImage);
 
+                    }else if(clicked.equals("shop")){
+
+                        imageUri = result.getUri();
+                        imageView.setImageURI(imageUri);
+                        Picasso.get().load(imageUri).into(imageView);
+                        Log.w(TAG, "ResultUri=>" + imageUri);
+
+                    }
 
                 } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                     Exception e = result.getError();
@@ -175,30 +192,42 @@ public class AddShop extends AppCompatActivity implements View.OnClickListener{
                 }else if(shopName.getText().toString().trim().equals("")){
                     shopName.setError("Shop name is mandatory");
                     shopName.requestFocus();
-                }else if (shopCategory.getText().toString().equals("")){
-                    shopCategory.setError("Enter Shop Category ");
-                    shopCategory.requestFocus();
-                }else if(shopOwnerName.getText().toString().equals("")){
+                }else if (category.equals("Select Category")){
+
+                    Toast.makeText(getApplicationContext(),"Select Shop Category",Toast.LENGTH_LONG).show();
+
+                }else if(category.equals("Eats") && fssaiUri==null) {
+                    Toast.makeText(getApplicationContext(), "FSSAI license is required for addding Food shops", Toast.LENGTH_LONG).show();
+                }
+                else if(shopOwnerName.getText().toString().equals("")){
                     shopOwnerName.requestFocus();
                     shopOwnerName.setError("Enter Owner Name");
                 }else if(ownerContact.getText().toString().equals("")){
                     ownerContact.requestFocus();
-                    ownerContact.setError("Enter Owner Name");
+                    ownerContact.setError("Enter Owner Number");
                 }else if(ownerEmail.getText().toString().equals("")){
                     ownerEmail.requestFocus();
-                    ownerEmail.setError("Enter Owner Name");
+                    ownerEmail.setError("Enter Owner Email");
                 }else if(shopAddress.getText().toString().equals("")){
                     shopAddress.requestFocus();
-                    shopAddress.setError("Enter Owner Name");
+                    shopAddress.setError("Enter Owner Address");
                 }  else if(PinCode.getText().toString().equals("")){
                     PinCode.setError("PinCode is necessary");
                     PinCode.requestFocus();
-                }else
+                }else{
+                    progressBar.setVisibility(View.VISIBLE);
                     saveOnDb();
+                }
+                break;
+            }
+            case R.id.fssaiImage:{
+                showImagedImportDialog();
+                clicked="fssai";
                 break;
             }
             case R.id.addImage:{
                 showImagedImportDialog();
+                clicked="shop";
                 break;
             }
 
@@ -242,10 +271,23 @@ public class AddShop extends AppCompatActivity implements View.OnClickListener{
     }
     private void saveOnDb() {
         try {
+            final DatabaseReference shopReferrance=FirebaseDatabase.getInstance().getReference().child("Shop").child(phone);
             reference = FirebaseDatabase.getInstance().getReference().child("Partner").child(phone).child("ShopDetails");
             final StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("Partner").child("PartnerShop");
-            String pushkey=reference.push().getKey();
+            final String pushkey=reference.push().getKey();
             final String[] path = new String[1];
+
+            model.setShopName(shopName.getText().toString().trim());
+            model.setOwnerContact(ownerContact.getText().toString().trim());
+            model.setOwnerMail(ownerEmail.getText().toString().trim());
+            model.setOwnerName(shopOwnerName.getText().toString().trim());
+            model.setShopAddress(shopAddress.getText().toString().trim() + address2.getText().toString().trim());
+            model.setShopCategory(category);
+            model.setPushkey(pushkey);
+            model.setCity(cityName);
+            model.setState(stateName);
+            model.setVerificationStatus(true);
+
             AsyncTask.execute(new Runnable() {
                 @Override
                 public void run() {
@@ -260,7 +302,8 @@ public class AddShop extends AppCompatActivity implements View.OnClickListener{
                                         path[0] = uri.toString();
                                         Map<String, Object> imageObject = new HashMap<>();
                                         imageObject.put("ShopImage", path[0]);
-                                        reference.updateChildren(imageObject).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        shopReferrance.child(model.getShopName()).updateChildren(imageObject);
+                                        reference.child(pushkey).updateChildren(imageObject).addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
                                                 Intent intent=new Intent(AddShop.this,ManageShop.class);
@@ -277,18 +320,12 @@ public class AddShop extends AppCompatActivity implements View.OnClickListener{
                     }
                 }
             });
-            model.setOwnerContact(ownerContact.getText().toString().trim());
-            model.setOwnerMail(ownerEmail.getText().toString().trim());
-            model.setOwnerName(shopOwnerName.getText().toString().trim());
-            model.setShopAddress(shopAddress.getText().toString().trim() + address2.getText().toString().trim());
-            model.setShopCategory(shopCategory.getText().toString().trim());
-            model.setPushkey(pushkey);
-            model.setCity(cityName);
-            model.setState(stateName);
+
+            shopReferrance.child(model.getShopName()).setValue(model);
             reference.child(pushkey).setValue(model).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
-
+                    shopReferrance.child(model.getShopName()).setValue(model);
                     Log.w(TAG, "Data Saved");
                 }
             });
@@ -340,4 +377,20 @@ public class AddShop extends AppCompatActivity implements View.OnClickListener{
         startActivityForResult(cameraIntent, OPTION_CAMERA_CODE);
     }
 
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        category=adapterView.getItemAtPosition(i).toString();
+        if(category.equals("Eats")){
+            fssaiLayout.setVisibility(View.VISIBLE);
+        }else
+            fssaiLayout.setVisibility(View.GONE);
+
+
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
+    }
 }

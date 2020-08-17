@@ -2,6 +2,7 @@ package com.hotspot.hotspotserviceprovider;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -12,6 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -22,12 +24,13 @@ import com.google.firebase.database.ValueEventListener;
 import com.hotspot.hotspotserviceprovider.modelClasses.ServiceUserModel;
 
 public class Wallet extends AppCompatActivity {
-    LinearLayout walletLayout;
+    ConstraintLayout walletLayout;
     TextView walletBalance;
     String phone;
     DatabaseReference ref;
     String TAG="Wallet";
     ServiceUserModel model;
+    ProgressBar progressBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,10 +38,11 @@ public class Wallet extends AppCompatActivity {
         try {
             SharedPreferences userPref = getSharedPreferences("PartnerPref", MODE_PRIVATE);
             phone = userPref.getString("Phone", "");
-
+            final SharedPreferences.Editor editor=userPref.edit();
             walletLayout = findViewById(R.id.walletLayout);
             walletBalance = findViewById(R.id.walletBalance);
-
+            progressBar=findViewById(R.id.progress);
+            progressBar.setVisibility(View.VISIBLE);
             ref = FirebaseDatabase.getInstance().getReference().child("Partner").child(phone);
 
 
@@ -70,6 +74,10 @@ public class Wallet extends AppCompatActivity {
                     Log.w(TAG, "DataSnapshot=>" + dataSnapshot);
                     model = dataSnapshot.getValue(ServiceUserModel.class);
                     walletBalance.setText(model.getWalletBalance());
+                    progressBar.setVisibility(View.GONE);
+                    editor.putString("Walletbalance",model.getWalletBalance());
+                    editor.apply();
+
                     }
                 }
 
