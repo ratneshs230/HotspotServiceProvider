@@ -39,6 +39,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.hotspot.hotspotserviceprovider.modelClasses.BankModel;
 import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -363,12 +364,13 @@ public class DocumentsUpdate extends AppCompatActivity implements View.OnClickLi
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
+                final BankModel bankmodel=new BankModel();
                 FirebaseDatabase.getInstance().getReference().child("Partner").child(phone).child("Documents").child("BankDetails").addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if(snapshot.exists()){
                           bankDetailsUpdate.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.ic_checked,0);
-
+//                            bankmodel=snapshot.getValue(BankModel.class);
                         }
                     }
 
@@ -389,6 +391,8 @@ public class DocumentsUpdate extends AppCompatActivity implements View.OnClickLi
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
 
                         if (snapshot.exists()){
+                            Log.w(TAG,"SNapshot=>"+snapshot);
+                            Picasso.get().load(snapshot.child("PanImage").getValue(String.class)).into(PanPersonal);
                             PanCardUpdate.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.ic_checked,0);
 
                         }
@@ -409,6 +413,7 @@ public class DocumentsUpdate extends AppCompatActivity implements View.OnClickLi
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
 
                         if (snapshot.exists()){
+                            gstNo.setText(snapshot.child("GST_Number").getValue(String.class));
                             gstDetailUpdate.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.ic_checked,0);
 
                         }

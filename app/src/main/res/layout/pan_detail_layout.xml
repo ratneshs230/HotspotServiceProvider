@@ -112,7 +112,7 @@
             android:layout_height="wrap_content"
             android:padding="10dp"
             android:text="@string/head_prsnl"
-            android:textAlignment="center"
+            android:gravity="center"
             android:textSize="20dp"
             android:textStyle="bold" />
 
@@ -136,7 +136,7 @@
                 android:id="@+id/radio_button_4"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginStart="20dp"
+                android:layout_marginLeft="20dp"
                 android:buttonTint="@color/colorPrimaryDark"
                 android:textColor="@color/colorPrimaryDark"
                 android:layout_weight="1"

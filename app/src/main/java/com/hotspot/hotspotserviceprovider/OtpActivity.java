@@ -180,7 +180,7 @@ try {
 
         @Override
         public void onCodeSent(String s, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
-            super.onCodeSent(s, forceResendingToken);
+            //  super.onCodeSent(s, forceResendingToken);
             verificationid = s;
         }
 

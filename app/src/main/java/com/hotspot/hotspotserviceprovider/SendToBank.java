@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.LinkAddress;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,8 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,9 +24,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
-import com.hotspot.hotspotserviceprovider.modelClasses.ShopDetailModel;
-import com.hotspot.hotspotserviceprovider.modelClasses.bankModel;
-import com.squareup.picasso.Picasso;
+import com.hotspot.hotspotserviceprovider.modelClasses.BankModel;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -76,13 +71,13 @@ String TAG="SendToBank";
     private void fetchBankDetails() {
         try {
             Query query = FirebaseDatabase.getInstance().getReference().child("Partner").child(phone).child("Documents").child("BankDetails");
-            FirebaseRecyclerOptions<bankModel> options = new FirebaseRecyclerOptions.Builder<bankModel>()
-                    .setQuery(query, bankModel.class)
+            FirebaseRecyclerOptions<BankModel> options = new FirebaseRecyclerOptions.Builder<BankModel>()
+                    .setQuery(query, BankModel.class)
                     .build();
 
-            adapter = new FirebaseRecyclerAdapter<bankModel, ViewHolder>(options) {
+            adapter = new FirebaseRecyclerAdapter<BankModel, ViewHolder>(options) {
                 @Override
-                protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull bankModel model) {
+                protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull BankModel model) {
 
                     holder.setaccountHolder(model.getAccHolder());
                     holder.setbankIfsc(model.getAccIFSC());

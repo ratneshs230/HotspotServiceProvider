@@ -55,6 +55,8 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:boxStrokeWidth="0dp"
+                android:background="@drawable/edittext_layout"
                 android:layout_marginRight="10dp"
                 android:hint="@string/otp"
 

@@ -1,11 +1,64 @@
 package com.hotspot.hotspotserviceprovider.modelClasses;
 
 public class ShopDetailModel {
-    String ShopImage,ownerName,shopName,ownerContact,shopCategory,ownerMail,shopAddress,state,city,pushkey;
+    String ShopImage;
+    String ownerName;
+    String shopName;
+    String ownerContact;
+    String shopCategory;
+    String ownerMail;
+    String shopAddress;
+    String state;
+    String city;
+    String pushkey;
+    String pincode;
+
+    public String getMedicalStoreCategory() {
+        return medicalStoreCategory;
+    }
+
+    public void setMedicalStoreCategory(String medicalStoreCategory) {
+        this.medicalStoreCategory = medicalStoreCategory;
+    }
+
+    public String getDoctorCategory() {
+        return doctorCategory;
+    }
+
+    public void setDoctorCategory(String doctorCategory) {
+        this.doctorCategory = doctorCategory;
+    }
+
+    public String getEleopathicCategory() {
+        return eleopathicCategory;
+    }
+
+    public void setEleopathicCategory(String eleopathicCategory) {
+        this.eleopathicCategory = eleopathicCategory;
+    }
+
+    public String getUserID() {
+        return userID;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
+    }
+
+    String userID;
     Boolean verificationStatus;
+    String  medicalStoreCategory,doctorCategory,eleopathicCategory;
 
     public Boolean getVerificationStatus() {
         return verificationStatus;
+    }
+
+    public String getPincode() {
+        return pincode;
+    }
+
+    public void setPincode(String pincode) {
+        this.pincode = pincode;
     }
 
     public void setVerificationStatus(Boolean verificationStatus) {

@@ -14,9 +14,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -67,7 +70,7 @@ public class ManageProducts extends AppCompatActivity implements View.OnClickLis
 
     public  void fetchProducts(){
 
-        Query query= FirebaseDatabase.getInstance().getReference().child("Products").child(uid);
+        Query query= FirebaseDatabase.getInstance().getReference().child("Products").orderByChild("sellerUid").equalTo(uid);
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -103,7 +106,18 @@ public class ManageProducts extends AppCompatActivity implements View.OnClickLis
                 holder.deleteProducts.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        FirebaseDatabase.getInstance().getReference().child("Products").child(uid).child(model.getProductPushkey()).removeValue();
+                        Log.w(TAG,"deleteProductClicked");
+                        FirebaseDatabase.getInstance().getReference().child("Products").child(model.getProductPushkey()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(ManageProducts.this,"Product Removed",Toast.LENGTH_LONG).show();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.w(TAG,"exceptin=>"+e);
+                            }
+                        });
                     }
                 });
                 holder.editProducts.setOnClickListener(new View.OnClickListener() {

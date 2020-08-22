@@ -49,6 +49,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.hotspot.hotspotserviceprovider.modelClasses.DoctorModelClass;
 import com.hotspot.hotspotserviceprovider.modelClasses.ProductsModel;
 import com.hotspot.hotspotserviceprovider.modelClasses.ShopDetailModel;
 import com.squareup.picasso.Picasso;
@@ -61,7 +62,7 @@ import java.util.Map;
 public class ManageShop extends AppCompatActivity implements View.OnClickListener{
 
     FloatingActionButton addShop;
-    RecyclerView shopRecycler;
+    RecyclerView shopRecycler,serviceRecycler;
     LinearLayoutManager linearLayoutManager;
     String phone;
     String TAG="ManageShop";
@@ -81,15 +82,58 @@ public class ManageShop extends AppCompatActivity implements View.OnClickListene
             phone = pref.getString("Phone", "");
             shopRecycler = findViewById(R.id.shopRecycler);
             addShop = findViewById(R.id.floatingActionButton);
+            serviceRecycler=findViewById(R.id.serviceRecycler);
             shopDetailModel = new ShopDetailModel();
             fetch();
+            fetchServices();
             addShop.setOnClickListener(this);
+            linearLayoutManager=new LinearLayoutManager(this);
             layoutManager = new LinearLayoutManager(this);
             shopRecycler.setLayoutManager(layoutManager);
+            serviceRecycler.setLayoutManager(linearLayoutManager);
 
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    private void fetchServices() {
+        try {
+            Query query = FirebaseDatabase.getInstance().getReference().child("Partner").child(phone).child("Services");
+            FirebaseRecyclerOptions<DoctorModelClass> options = new FirebaseRecyclerOptions.Builder<DoctorModelClass>()
+                    .setQuery(query, DoctorModelClass.class)
+                    .build();
+
+            adapter = new FirebaseRecyclerAdapter<DoctorModelClass, ViewHolder>(options) {
+                @Override
+                protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull DoctorModelClass model) {
+
+                holder.setmProviderName(model.getDoctorName());
+                holder.setmServiceName(model.getServicType());
+                holder.setmServiceImage(model.getDoctorProfilePic());
+
+                }
+
+                @NonNull
+                @Override
+                public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                    View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.service_cardview, parent, false);
+                    return new ViewHolder(view);
+                }
+            };
+            serviceRecycler.setAdapter(adapter);
+            adapter.startListening();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent=new Intent(ManageShop.this,AllServices.class);
+        startActivity(intent);
     }
 
     private void fetch() {
@@ -128,12 +172,16 @@ public class ManageShop extends AppCompatActivity implements View.OnClickListene
 
         public class ViewHolder extends RecyclerView.ViewHolder {
 
-            TextView mShopName,mOwnerName,mCategory,mAddress,verification;
-            ImageView mImageViewShop;
+            TextView mShopName,mOwnerName,mCategory,mAddress,verification,mServiceName,mProviderName;
+            ImageView mImageViewShop,mServiceImage;
 
             public ViewHolder(@NonNull View itemView) {
 
                 super(itemView);
+                mProviderName=itemView.findViewById(R.id.tv_provider_name);
+                mServiceName= itemView.findViewById(R.id.tv_service_name);
+                mServiceImage=itemView.findViewById(R.id.iv_service);
+
                 mShopName=itemView.findViewById(R.id.tv_shop_name);
                 mOwnerName=itemView.findViewById(R.id.tv_owner_name);
                 mCategory=itemView.findViewById(R.id.tv_category);
@@ -154,6 +202,13 @@ public class ManageShop extends AppCompatActivity implements View.OnClickListene
                     verification.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.outline_report_black_18dp,0);
                 }
             }
+
+            public void  setmServiceName(String string) {
+                mServiceName.setText(string);
+            }
+            public void  setmProviderName(String string) {
+                mProviderName.setText(string);
+            }
             public void setmShopName(String string) {
                 mShopName.setText(string);
             }
@@ -165,6 +220,9 @@ public class ManageShop extends AppCompatActivity implements View.OnClickListene
 //            public void setmAddress(String string){
 //                mAddress.setText(string);
 //            }
+            public void setmServiceImage(String img){
+                Picasso.get().load(img).into(mServiceImage);
+            }
             public void setmImageViewShop(String img){
                 Picasso.get().load(img).into(mImageViewShop);
             }

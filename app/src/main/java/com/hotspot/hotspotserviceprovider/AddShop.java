@@ -54,11 +54,12 @@ public class AddShop extends AppCompatActivity implements View.OnClickListener, 
     private static final int OPTION_GALLERY_CODE = 1001;
     private String[] cameraPermission;
     private String[] storagePermission;
-
+    LinearLayout spinnerLayout;
     ProgressBar progressBar;
     ShopDetailModel model;
     Uri imageUri,fssaiUri;
-    ArrayAdapter<String> cityAdapter;
+    ArrayAdapter<String> medicalCategoryAdapter;
+    ArrayAdapter<String> mainCategoryAdapter,subCategoryAdapter;
     Spinner citySpinner;
     String TAG="ManageShop";
     String cityName, stateName;
@@ -66,16 +67,26 @@ public class AddShop extends AppCompatActivity implements View.OnClickListener, 
     ImageButton addImage;
     TextInputEditText shopName,shopOwnerName,ownerContact,ownerEmail,shopAddress,address2,PinCode;
     Spinner spinnerCategory,city;
-
     Button submit;
     DatabaseReference reference;
     String phone,category;
 LinearLayout fssaiLayout;
 ImageView fssaiImage;
-String clicked;
+String clicked,mainCategoryName,subCategoryName,medicalCategoryName;
+    LinearLayout mMainCategory,mCategory,mSubCategory;
+    Spinner sMainCategory,sCategory,sSubCategory;
+
     private String[] categoryList = new String[]{
             "Select Category", "Eats", "Medics","Stay","Games","Shop Stop","Liquor Land","Call for Any","Vocal to Local","Fashion and Accessories"};
 
+    private String[] mainCategoryList = new String[]{
+            "Select Category", "Medical Store", "Lab","Hospital","Pet Stop"};
+    private String[] medicalCategoryList = new String[]{
+            "Select Category", "Homoepathic", "Eleopathic", "Ayurvedic","Generic"};
+
+    private String[] subCategoryList = new String[]{
+            "Select Category", "General Physician","Dermatology","Gynecology","Sexologist","Orthopedic","Ent","Neuro","Psychiatry","Child Specialist","Gastroentrologist",
+            "Gastroenterologist","Cardiologist","Diabetology","Pulmonologist","Oncologist","Ophtalmologist","Psychologist","Urologist","Vascular Surgeon","Dentist","Dietician"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,9 +104,11 @@ String clicked;
                     phone="UnKnown";
                 }
             model=new ShopDetailModel();
+
             fssaiLayout=findViewById(R.id.fssaiLayout);
             fssaiImage=findViewById(R.id.fssaiImage);
             progressBar=findViewById(R.id.progressBar);
+            spinnerLayout=findViewById(R.id.spinnerLayout);
             imageView = findViewById(R.id.imageView);
             addImage = findViewById(R.id.addImage);
             shopAddress = findViewById(R.id.address1);
@@ -107,6 +120,18 @@ String clicked;
             address2 = findViewById(R.id.address2);
             submit = findViewById(R.id.submit);
             PinCode=findViewById(R.id.shoppincode);
+
+            //medics category
+            mCategory = findViewById(R.id.category);
+            mMainCategory = findViewById(R.id.mainCategory);
+            mSubCategory = findViewById(R.id.subCategory);
+
+            sCategory = findViewById(R.id.s_category);
+            sMainCategory = findViewById(R.id.main_category);
+            sSubCategory = findViewById(R.id.sub_category);
+            //medics category
+
+
             addImage.setOnClickListener(this);
 
             submit.setOnClickListener(this);
@@ -117,11 +142,6 @@ String clicked;
             spinnerCategory.setAdapter(adapter);
             spinnerCategory.setOnItemSelectedListener(this);
 
-            fssaiImage.setOnClickListener(this);
-            if(category.equals("Eats")){
-                fssaiLayout.setVisibility(View.VISIBLE);
-            }else
-                fssaiLayout.setVisibility(View.GONE);
 
 
         }catch (Exception e){
@@ -129,6 +149,166 @@ String clicked;
         }
     }
 
+
+
+    private void saveOnDb() {
+        try {
+            final DatabaseReference shopReferrance=FirebaseDatabase.getInstance().getReference().child("Shop");
+            reference = FirebaseDatabase.getInstance().getReference().child("Partner").child(phone).child("ShopDetails");
+            final StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("Partner").child("PartnerShop");
+            final String pushkey=reference.push().getKey();
+            final String[] path = new String[1];
+
+            model.setShopName(shopName.getText().toString().trim());
+            model.setOwnerContact(ownerContact.getText().toString().trim());
+            model.setOwnerMail(ownerEmail.getText().toString().trim());
+            model.setOwnerName(shopOwnerName.getText().toString().trim());
+            model.setShopAddress(shopAddress.getText().toString().trim() + address2.getText().toString().trim());
+            model.setShopCategory(category);
+            model.setPushkey(pushkey);
+            model.setCity(cityName);
+            model.setState(stateName);
+            model.setVerificationStatus(false);
+            model.setPincode(PinCode.getText().toString());
+            model.setMedicalStoreCategory(mainCategoryName);
+            model.setDoctorCategory(medicalCategoryName);
+            model.setEleopathicCategory(subCategoryName);
+            AsyncTask.execute(new Runnable() {
+                @Override
+                public void run() {
+                    if(imageUri!=null){
+                        storageReference.child(phone).putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                Task<Uri> downloadUri = taskSnapshot.getStorage().getDownloadUrl();
+                                downloadUri.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        path[0] = uri.toString();
+                                        Map<String, Object> imageObject = new HashMap<>();
+                                        imageObject.put("ShopImage", path[0]);
+                                        shopReferrance.child(pushkey).updateChildren(imageObject);
+                                        reference.child(pushkey).updateChildren(imageObject).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                Intent intent=new Intent(AddShop.this,ManageShop.class);
+                                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                startActivity(intent);
+                                                Toast.makeText(AddShop.this, "Data Saved Successfully ", Toast.LENGTH_LONG).show();
+                                            }
+                                        });
+
+                                    }
+                                });
+                            }
+                        });
+                    }
+                }
+            });
+
+            reference.child(pushkey).setValue(model).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    shopReferrance.child(pushkey).setValue(model);
+                    Log.w(TAG, "Data Saved");
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+
+
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        switch (adapterView.getId()) {
+
+            case R.id.shopCategory: {
+                category=adapterView.getItemAtPosition(i).toString();
+
+                switch (category) {
+                    case "Eats": {
+                        spinnerLayout.setVisibility(View.GONE);
+                        fssaiLayout.setVisibility(View.VISIBLE);
+                        break;
+                    }
+                    case "Medics": {
+                        mainCategoryAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, mainCategoryList);
+                        mainCategoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        mMainCategory.setVisibility(View.VISIBLE);
+                        spinnerLayout.setVisibility(View.VISIBLE);
+                        sMainCategory.setAdapter(mainCategoryAdapter);
+                        sMainCategory.setOnItemSelectedListener(this);
+                        fssaiLayout.setVisibility(View.GONE);
+
+                        break;
+                    }
+                    default:    spinnerLayout.setVisibility(View.GONE);
+                    fssaiLayout.setVisibility(View.GONE);
+                    break;
+
+                }
+                break;
+            }
+            case R.id.main_category:{
+                mainCategoryName=adapterView.getItemAtPosition(i).toString();
+                Log.w(TAG,mainCategoryName);
+                switch (mainCategoryName){
+
+                    case "Medical Store":{
+                        medicalCategoryAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, medicalCategoryList);
+                        medicalCategoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        sCategory.setAdapter(medicalCategoryAdapter);
+                        mCategory.setVisibility(View.VISIBLE);
+                        sCategory.setOnItemSelectedListener(this);
+
+                        break;
+                    }
+                    default:{
+                        mCategory.setVisibility(View.GONE);
+                        break;
+                    }
+                }
+               break;
+            }
+            case R.id.s_category: {
+                medicalCategoryName = adapterView.getItemAtPosition(i).toString();
+                Log.w(TAG,"medical+>"+medicalCategoryName);
+                switch (medicalCategoryName){
+                    case "Eleopathic":{
+                        subCategoryAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, subCategoryList);
+                        subCategoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        mSubCategory.setVisibility(View.VISIBLE);
+                        sSubCategory.setAdapter(subCategoryAdapter);
+                        sSubCategory.setOnItemSelectedListener(this);
+                        break;
+                    }
+                    default:{
+                        mSubCategory.setVisibility(View.GONE);
+                        break;
+                    }
+                }
+
+            }
+            case R.id.sub_category:{
+                subCategoryName=adapterView.getItemAtPosition(i).toString();
+
+                Log.w(TAG,"subCategoryName=>"+subCategoryName);
+
+                break;
+            }
+
+
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
+    }
 
 
     @Override
@@ -269,74 +449,6 @@ String clicked;
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) == (PackageManager.PERMISSION_GRANTED);
         return resultStorage;
     }
-    private void saveOnDb() {
-        try {
-            final DatabaseReference shopReferrance=FirebaseDatabase.getInstance().getReference().child("Shop").child(phone);
-            reference = FirebaseDatabase.getInstance().getReference().child("Partner").child(phone).child("ShopDetails");
-            final StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("Partner").child("PartnerShop");
-            final String pushkey=reference.push().getKey();
-            final String[] path = new String[1];
-
-            model.setShopName(shopName.getText().toString().trim());
-            model.setOwnerContact(ownerContact.getText().toString().trim());
-            model.setOwnerMail(ownerEmail.getText().toString().trim());
-            model.setOwnerName(shopOwnerName.getText().toString().trim());
-            model.setShopAddress(shopAddress.getText().toString().trim() + address2.getText().toString().trim());
-            model.setShopCategory(category);
-            model.setPushkey(pushkey);
-            model.setCity(cityName);
-            model.setState(stateName);
-            model.setVerificationStatus(true);
-
-            AsyncTask.execute(new Runnable() {
-                @Override
-                public void run() {
-                    if(imageUri!=null){
-                        storageReference.child(phone).putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                Task<Uri> downloadUri = taskSnapshot.getStorage().getDownloadUrl();
-                                downloadUri.addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                    @Override
-                                    public void onSuccess(Uri uri) {
-                                        path[0] = uri.toString();
-                                        Map<String, Object> imageObject = new HashMap<>();
-                                        imageObject.put("ShopImage", path[0]);
-                                        shopReferrance.child(model.getShopName()).updateChildren(imageObject);
-                                        reference.child(pushkey).updateChildren(imageObject).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                Intent intent=new Intent(AddShop.this,ManageShop.class);
-                                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                                startActivity(intent);
-                                                Toast.makeText(AddShop.this, "Data Saved Successfully ", Toast.LENGTH_LONG).show();
-                                            }
-                                        });
-
-                                    }
-                                });
-                            }
-                        });
-                    }
-                }
-            });
-
-            shopReferrance.child(model.getShopName()).setValue(model);
-            reference.child(pushkey).setValue(model).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    shopReferrance.child(model.getShopName()).setValue(model);
-                    Log.w(TAG, "Data Saved");
-                }
-            });
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
-    }
-
-
-
 
     //permissionRequest
     private void requestStoragePermission() {
@@ -377,20 +489,5 @@ String clicked;
         startActivityForResult(cameraIntent, OPTION_CAMERA_CODE);
     }
 
-    @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        category=adapterView.getItemAtPosition(i).toString();
-        if(category.equals("Eats")){
-            fssaiLayout.setVisibility(View.VISIBLE);
-        }else
-            fssaiLayout.setVisibility(View.GONE);
 
-
-
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
-
-    }
 }

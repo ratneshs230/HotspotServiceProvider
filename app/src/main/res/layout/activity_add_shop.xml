@@ -12,6 +12,7 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:visibility="invisible"
+        android:elevation="10dp"
         app:layout_constraintBottom_toBottomOf="@+id/scrollView2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -38,6 +39,9 @@
                 <ImageView
                     android:id="@+id/imageView"
                     android:layout_width="150dp"
+
+
+                    android:background="@drawable/edittext_layout"
                     android:layout_height="150dp"
                     android:layout_gravity="center"
                     android:layout_margin="10dp"
@@ -52,6 +56,8 @@
                     android:id="@+id/addImage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    app:boxStrokeWidth="0dp"
+                    android:background="@drawable/edittext_layout"
                     android:layout_gravity="center"
                     android:layout_margin="10dp"
                     android:padding="10dp"
@@ -88,11 +94,17 @@
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
+                        app:boxStrokeWidth="0dp"
+                        app:boxBackgroundColor="#F1F3F6"
+
+                        android:layout_marginLeft="5dp"
                         android:hint="Shop Name">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/shopName"
+
+                            app:boxStrokeWidth="0dp"
+                            android:background="@drawable/edittext_layout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
 
@@ -103,47 +115,143 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
+
                     android:orientation="horizontal">
 
+
+
+
+
+                    <Spinner
+                        android:id="@+id/shopCategory"
+                        android:background="@drawable/lightgray_bg"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        />
                     <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:padding="5dp"
                         android:src="@drawable/referral" />
 
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="30dp"
+                    android:padding="10dp"
+                    android:visibility="gone"
+                    android:background="@drawable/round_button"
+                    android:id="@+id/spinnerLayout">
+                    <LinearLayout
+                        android:id="@+id/mainCategory"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal">
+
+<!--                        <ImageView-->
+<!--                            android:layout_width="40dp"-->
+<!--                            android:layout_height="40dp"-->
+<!--                            android:layout_gravity="center"-->
+<!--                            android:padding="5dp"-->
+<!--                            android:src="@drawable/referral" />-->
+
 
                         <Spinner
-                            android:id="@+id/shopCategory"
-                            android:background="@drawable/round_button"
+                            android:id="@+id/main_category"
+                            android:background="@drawable/lightgray_bg"
                             android:padding="10dp"
+                            android:layout_gravity="right"
+                            android:layout_marginLeft="17dp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                             />
+                            />
+
+
+                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/category"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:visibility="gone"
+                        android:orientation="horizontal">
+
+<!--                        <ImageView-->
+<!--                            android:layout_width="40dp"-->
+<!--                            android:layout_height="40dp"-->
+<!--                            android:layout_gravity="center"-->
+<!--                            android:padding="5dp"-->
+<!--                            android:src="@drawable/referral" />-->
+
+
+                        <Spinner
+                            android:id="@+id/s_category"
+                            android:background="@drawable/lightgray_bg"
+                            android:padding="10dp"
+                            android:layout_marginLeft="17dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            />
+
+
+                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/subCategory"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:visibility="gone"
+                        android:orientation="horizontal">
+
+<!--                        <ImageView-->
+<!--                            android:layout_width="40dp"-->
+<!--                            android:layout_height="40dp"-->
+<!--                            android:layout_gravity="center"-->
+<!--                            android:padding="5dp"-->
+<!--                            android:src="@drawable/referral" />-->
+
+
+                        <Spinner
+                            android:id="@+id/sub_category"
+                            android:background="@drawable/lightgray_bg"
+                            android:padding="10dp"
+                            android:layout_marginLeft="17dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            />
+
+
+                    </LinearLayout>
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/fssaiLayout"
+                    android:visibility="gone"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/fssaiText"
+                        android:text="Upload your FSSAI License here"
+                        android:layout_weight="1"/>
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_weight="1"
+                        android:id="@+id/fssaiImage"
+                        android:src="@drawable/ic_baseline_add_a_photo_24"/>
 
 
                 </LinearLayout>
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:id="@+id/fssaiLayout"
-    android:visibility="gone"
-    android:orientation="horizontal">
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/fssaiText"
-        android:text="Upload your FSSAI License here"
-        android:layout_weight="1"/>
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_weight="1"
-        android:id="@+id/fssaiImage"
-        android:src="@drawable/ic_baseline_add_a_photo_24"/>
-
-
-</LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -162,13 +270,19 @@
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
+                        android:layout_marginLeft="5dp"
+                        app:boxStrokeWidth="0dp"
+                        android:background="@drawable/edittext_layout"
                         android:hint="Shop Owner">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/shopOwnerName"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+
+                            app:boxStrokeWidth="0dp"
+                            android:background="@drawable/edittext_layout"
+
                             android:inputType="text" />
 
                     </com.google.android.material.textfield.TextInputLayout>
@@ -192,13 +306,18 @@
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
+                        app:boxStrokeWidth="0dp"
+                        android:background="@drawable/edittext_layout"
+                        android:layout_marginLeft="5dp"
                         android:hint="Owner Contact Number">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/ownerContact"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+
+                            app:boxStrokeWidth="0dp"
+                            android:background="@drawable/edittext_layout"
                             android:inputType="number" />
 
                     </com.google.android.material.textfield.TextInputLayout>
@@ -222,13 +341,17 @@
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
+                        android:layout_marginLeft="5dp"
+                        app:boxStrokeWidth="0dp"
+                        android:background="@drawable/edittext_layout"
                         android:hint="Owner Email">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/ownerEmail"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            app:boxStrokeWidth="0dp"
+                            android:background="@drawable/edittext_layout"
                             android:inputType="text" />
 
                     </com.google.android.material.textfield.TextInputLayout>
@@ -252,13 +375,17 @@
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
+                        android:layout_marginLeft="5dp"
+                        app:boxStrokeWidth="0dp"
+                        android:background="@drawable/edittext_layout"
                         android:hint="Shop Address 1">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/address1"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            app:boxStrokeWidth="0dp"
+                            android:background="@drawable/edittext_layout"
                             android:inputType="text" />
 
                     </com.google.android.material.textfield.TextInputLayout>
@@ -282,13 +409,17 @@
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
+                        app:boxStrokeWidth="0dp"
+                        android:background="@drawable/edittext_layout"
+                        android:layout_marginLeft="5dp"
                         android:hint="Shop Address">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/address2"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            app:boxStrokeWidth="0dp"
+                            android:background="@drawable/edittext_layout"
                             android:inputType="text" />
 
                     </com.google.android.material.textfield.TextInputLayout>
@@ -312,13 +443,16 @@
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
+                        android:layout_marginLeft="5dp"
                         android:hint="Shop Pincode">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/shoppincode"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+
+                            app:boxStrokeWidth="0dp"
+                            android:background="@drawable/edittext_layout"
                             android:inputType="number" />
 
                     </com.google.android.material.textfield.TextInputLayout>

@@ -12,6 +12,7 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:visibility="invisible"
+        android:elevation="10dp"
         app:layout_constraintBottom_toBottomOf="@+id/scrollView2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,44 +22,48 @@
     <ScrollView
         android:id="@+id/scrollView2"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/submit"
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="10dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingBottom="10dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <ImageView
+                <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/imageView"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:layout_gravity="center"
-                    android:layout_margin="10dp"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginTop="20dp"
+
                     android:src="@drawable/man"
                     android:textStyle="italic"
-                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
 
-                <ImageButton
-                    android:id="@+id/addImage"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_margin="10dp"
-                    android:padding="10dp"
-                    android:src="@drawable/ic_baseline_add_a_photo_24"
-                    android:textStyle="italic"
-                    app:layout_constraintBottom_toBottomOf="@+id/profile_image"
-                    app:layout_constraintStart_toEndOf="@+id/imageView" />
+                <!--                <ImageButton-->
+                <!--                    android:id="@+id/addImage"-->
+                <!--                    android:layout_width="wrap_content"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:layout_gravity="center"-->
+                <!--                    android:layout_margin="10dp"-->
+                <!--                    android:padding="10dp"-->
+                <!--                    android:src="@drawable/ic_baseline_add_a_photo_24"-->
+                <!--                    android:textStyle="italic"-->
+                <!--                    app:layout_constraintBottom_toBottomOf="@+id/profile_image"-->
+                <!--                    app:layout_constraintStart_toEndOf="@+id/imageView" />-->
+                <!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
@@ -88,7 +93,7 @@
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
+                        android:layout_marginLeft="5dp"
                         android:hint="Service Provider Name">
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -112,25 +117,117 @@
                         android:padding="5dp"
                         android:src="@drawable/referral" />
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/tvservicecategory"
+                    <Spinner
+                        android:id="@+id/spinnerServicecategory"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
 
-                        android:layout_marginStart="5dp"
-                        android:hint="Service Category">
+                        android:layout_marginLeft="5dp"
+                        android:hint="Service Category" />
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/serviceCategory"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="textEmailAddress" />
-
-                    </com.google.android.material.textfield.TextInputLayout>
 
                 </LinearLayout>
 
+                <LinearLayout
+                    android:id="@+id/spinnerLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="30dp"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    android:padding="10dp">
+
+                    <LinearLayout
+                        android:id="@+id/spinner1Layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal"
+                        android:visibility="gone">
+
+                        <!--                        <ImageView-->
+                        <!--                            android:layout_width="40dp"-->
+                        <!--                            android:layout_height="40dp"-->
+                        <!--                            android:layout_gravity="center"-->
+                        <!--                            android:padding="5dp"-->
+                        <!--                            android:src="@drawable/referral" />-->
+
+
+                        <Spinner
+                            android:id="@+id/spinner1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="right"
+                            android:layout_marginLeft="17dp"
+                            android:background="@drawable/lightgray_bg"
+                            android:padding="10dp" />
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/spinner2Layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal"
+                        android:visibility="gone">
+
+                        <!--                        <ImageView-->
+                        <!--                            android:layout_width="40dp"-->
+                        <!--                            android:layout_height="40dp"-->
+                        <!--                            android:layout_gravity="center"-->
+                        <!--                            android:padding="5dp"-->
+                        <!--                            android:src="@drawable/referral" />-->
+
+
+                        <Spinner
+                            android:id="@+id/spinner2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="17dp"
+                            android:background="@drawable/lightgray_bg"
+                            android:padding="10dp" />
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/spinner3Layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal"
+                        android:visibility="gone">
+
+                        <!--                        <ImageView-->
+                        <!--                            android:layout_width="40dp"-->
+                        <!--                            android:layout_height="40dp"-->
+                        <!--                            android:layout_gravity="center"-->
+                        <!--                            android:padding="5dp"-->
+                        <!--                            android:src="@drawable/referral" />-->
+
+
+                        <Spinner
+                            android:id="@+id/spinner3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="17dp"
+                            android:background="@drawable/lightgray_bg"
+                            android:padding="10dp" />
+
+
+                    </LinearLayout>
+                </LinearLayout>
+
+                <include
+                    layout="@layout/doctor_details_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="40dp"
+                    android:id="@+id/doctDetailLayout"
+                    android:visibility="gone"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -150,8 +247,8 @@
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
-                        android:hint="Owner Contact Number">
+                        android:layout_marginLeft="5dp"
+                        android:hint="Service Provider Number">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/providerContact"
@@ -162,36 +259,35 @@
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:orientation="horizontal">
+<!--                <LinearLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="10dp"-->
+<!--                    android:orientation="horizontal">-->
 
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_gravity="center"
-                        android:padding="5dp"
-                        android:src="@drawable/mail" />
+<!--                    <ImageView-->
+<!--                        android:layout_width="40dp"-->
+<!--                        android:layout_height="40dp"-->
+<!--                        android:layout_gravity="center"-->
+<!--                        android:padding="5dp"-->
+<!--                        android:src="@drawable/mail" />-->
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/tvemail"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
-                        android:hint="Owner Email">
+<!--                    <com.google.android.material.textfield.TextInputLayout-->
+<!--                        android:id="@+id/tvemail"-->
+<!--                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_marginLeft="5dp"-->
+<!--                        android:hint="Owner Email">-->
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/providerEmail"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="text" />
+<!--                        <com.google.android.material.textfield.TextInputEditText-->
+<!--                            android:id="@+id/providerEmail"-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:inputType="text" />-->
 
-                    </com.google.android.material.textfield.TextInputLayout>
-                </LinearLayout>
-
+<!--                    </com.google.android.material.textfield.TextInputLayout>-->
+<!--                </LinearLayout>-->
 
 
                 <LinearLayout
@@ -212,7 +308,7 @@
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
+                        android:layout_marginLeft="5dp"
                         android:hint="Service area Pin Code">
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -225,21 +321,17 @@
                 </LinearLayout>
 
 
-
-                <Button
-                    android:id="@+id/submit"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_margin="20dp"
-                    android:background="@drawable/btn_bg"
-                    android:text="Save"
-                    android:textColor="#fff"
-                    android:textSize="20sp" />
-
-
             </LinearLayout>
         </LinearLayout>
-
     </ScrollView>
-
+    <Button
+        android:id="@+id/submit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:background="@drawable/btn_bg"
+        android:text="Save"
+        android:textColor="#fff"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:textSize="20sp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
